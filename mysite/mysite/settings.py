@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tournamentdb',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'NAME': 'b2xcnt2htsoqwm9rlu1t',
+        'USER': 'ui5ig8xrnlfcd5nzaepk',
+        'PASSWORD': 'oxoVANHAH1HEq1YYrXOt',
+        'HOST': 'b2xcnt2htsoqwm9rlu1t-postgresql.services.clever-cloud.com',
         'PORT': '5432',
     }
 }
