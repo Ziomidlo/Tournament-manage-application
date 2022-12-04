@@ -15,14 +15,16 @@ class Team(models.Model):
     tournament = models.BooleanField()
     players = models.ForeignKey(User, on_delete=models.CASCADE)
     team_leader = models.BooleanField()
+    date = models.DateField(auto_now=True)
 
-class Torunament(models.Model): 
+class Tournament(models.Model):
     logo = models.ImageField()
     name = models.CharField(max_length= 200)
     description = models.CharField(max_length= 1000)
     number_of_teams = models.IntegerField()
-    team = models.ForeignKey(Team, unique=True, on_delete=models.CASCADE)
+    #team = models.ForeignKey(Team, unique=True, on_delete=models.CASCADE)
     mvp = models.BooleanField()
+    date = models.DateTimeField(auto_now=True)
 
 
 
