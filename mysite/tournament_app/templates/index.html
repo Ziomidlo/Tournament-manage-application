@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikacja turniejowa</title>
+    <title>Tournament application</title>
 </head>
 <body>
-    {%if latest_tournament_list %}
+    {% if latest_tournament_list %}
         <ul>
         {% for tournament in latest_tournament_list %}
-            <li><a href="/tournament_app/{{ tournament.id }}/">{{ tournament.name }}</a></li>
+            <li><a href="/tournament/{{ id }}/">{{ tournament.name }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
-        <p>Brak dostępnych pucharów.</p>
-    {% endif %}    
+        <p>Brak dostępnych turniejów.</p>
+    {% endif %}
 </body>
 </html>
