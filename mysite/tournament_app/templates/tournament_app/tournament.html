@@ -1,0 +1,11 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+    {%if details.date %}
+        {{details.date}}
+    {% endif %} 
+    <p>{{details.logo}}</p>
+    <p>{{details.name}}</p>
+    <p>{{details.description}}</p>
+    <p>{{details.number_of_teams}}</p>
+{% endblock %} 
