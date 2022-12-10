@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+
 
 from .models import UserProfile, Tournament
 
@@ -10,7 +11,7 @@ def index(request):
     return render(request, 'tournament_app/index.html', context)
 
 def tournament_details(request, pk):
-    details  = Tournament.objects.get(pk = pk)
+    details = get_object_or_404(Tournament, pk = pk)
     context = {'details' : details}
     return render(request, 'tournament_app/tournament.html', context)
 
