@@ -12,7 +12,7 @@
         {% if latest_tournament_list %}
             <ul>
             {% for tournament in latest_tournament_list %}
-                <li><a href="{% url 'tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a></li>
+                <li><a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a></li>
             {% endfor %}
             </ul>
         {% else %}

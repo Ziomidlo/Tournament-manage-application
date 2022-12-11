@@ -1,17 +1,26 @@
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'index'  %}"><img src="C:\Praca dyplomowa\Tournament-manage-application\mysite\tournament_app\src\logo.png" style="width:42px;height:42px;"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <a class="navbar-brand" href="{% url 'tournament_app:index'  %}"><img src="C:\Praca dyplomowa\Tournament-manage-application\mysite\tournament_app\src\logo.png" style="width:42px;height:42px;"></a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          {%if user.is_authenticated %}
+
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link" href="/logout">Wyloguj</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <p>Witaj, {{user.username}}!</p>
           </li>
+          <li class="nav-item">
+            
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'tournament_app:login' %}">Logowanie</a>
+          </li>
+
+          {% endif %}
+          
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
