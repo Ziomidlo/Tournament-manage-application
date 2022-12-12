@@ -6,17 +6,20 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 
 
-from .models import UserProfile, Tournament
+from .models import Tournament, User
 
 
 def index(request):
+    return render(request, 'tournament_app/index.html')
+
+def tournament_list(request):
     latest_tournament_list = Tournament.objects.order_by('id')
     context = {'latest_tournament_list' : latest_tournament_list}
-    return render(request, 'tournament_app/index.html', context)
+    return render(request, 'tournament_app/tournaments.html', context)
 
 def tournament_details(request, pk):
-    details = get_object_or_404(Tournament, pk = pk)
-    context = {'details' : details}
+    tournament_details = get_object_or_404(Tournament, pk = pk)
+    context = {'tournament' : tournament_details}
     return render(request, 'tournament_app/tournament.html', context)
 
 def register_request(request):
@@ -42,8 +45,6 @@ def login_request(request):
                 login(request, user)
                 messages.info(request, 'Jesteś zalogowany jako {username}.')
                 return redirect('tournament_app:index')
-            else:
-                messages.error(request, 'błędna nazwa użytkownika lub hasło!')
         else:
             messages.error(request,'błędna nazwa użytkownika lub hasło!')
     form = AuthenticationForm()

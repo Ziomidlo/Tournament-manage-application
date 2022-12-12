@@ -1,0 +1,25 @@
+{% extends 'tournament_app/base.html' %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournaments</title>
+</head>
+<body>
+    {% block content %}
+
+        {% if latest_tournament_list %}
+            <ul>
+            {% for tournament in latest_tournament_list %}
+                <li><a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Brak dostępnych turniejów.</p>
+        {% endif %}
+        
+    {% endblock %}
+</body>
+</html>

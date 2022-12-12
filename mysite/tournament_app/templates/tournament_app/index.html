@@ -9,15 +9,19 @@
 </head>
 <body>
     {% block content %}
-        {% if latest_tournament_list %}
-            <ul>
-            {% for tournament in latest_tournament_list %}
-                <li><a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a></li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <p>Brak dostępnych turniejów.</p>
+
+    {% if user.is_authenticated %}
+        {{user.logo}}
+        {%if user.is_team == false %}
+            <p>Brak drużyny</p>
+        {%else %}
+            <p>drużyna: {{user.is_team}}</p>
         {% endif %}
+        <p>informacje o użytkowniku: {{user.info}}
+    {% else %}
+        <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>
+    {% endif %}
+    
     {% endblock %}
 </body>
 </html>

@@ -132,6 +132,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_PROFILE_MODULE = 'torunament_app.UserProfile'
+AUTH_USER_MODEL = 'tournament_app.User'
 
 SITE_ID = 1
