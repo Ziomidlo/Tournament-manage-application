@@ -4,7 +4,11 @@
     {%if tournament.date %}
         {{tournament.date}}
     {% endif %} 
-    <p>{{tournament.logo}}</p>
+    {%if tournament.logo %}
+        <img src='{{tournament.logo.url}}' style='width:350px; length:350px'>
+    {% else %}
+        <p>Brak zdjęcia turnieju.</p>
+    {% endif %}
     <p>{{tournament.name}}</p>
     <p>{{tournament.description}}</p>
     <p>{{tournament.number_of_teams}}</p>

@@ -1,0 +1,19 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+
+<h2>{{ team.name }}</h2>
+{% if team.logo %}
+    <img src='{{ team.logo.url }}' style = "width:200px; length=200px;">
+{% else %}
+    <p>Brak zdjęcia drużyny.</p>
+{% endif %}
+{{ team.description }}
+{% if team.is_tournament %}
+    {{ team.is_tournament }}
+{% else %}
+    <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
+{% endif %}
+{{ team.players }}
+
+{% endblock %}

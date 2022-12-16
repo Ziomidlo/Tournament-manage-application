@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 
 from  . import views
 
@@ -8,7 +10,9 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('tournaments', views.tournament_list, name ='tournament_list'),
     path('tournament/<int:pk>/', views.tournament_details, name='tournament_details'),
+    path('teams', views.team_list, name='team_list'),
+    path('team/<int:pk>/', views.team_details, name='team_details'),
     path('register', views.register_request, name='register'),
     path('login', views.login_request, name='login' ),
     path('logout', views.logout_request, name='logout'),
-]
+]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

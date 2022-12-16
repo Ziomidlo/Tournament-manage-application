@@ -11,10 +11,14 @@
     {% block content %}
 
     {% if user.is_authenticated %}
-        {{user.logo}}
+        {% if user.logo %}
+            <img src='{{user.logo.url}}'style='width:200px;length=200px'>
+        {% else %}
+        {% endif %}
+            <p>Brak zdjecia profilowego.</p>
         {%if user.is_team == false %}
             <p>Brak drużyny</p>
-        {%else %}
+        {%else %}    
             <p>drużyna: {{user.is_team}}</p>
         {% endif %}
         <p>informacje o użytkowniku: {{user.info}}

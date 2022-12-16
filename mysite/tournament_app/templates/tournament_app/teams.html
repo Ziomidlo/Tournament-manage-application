@@ -1,0 +1,15 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+
+{% if team_list %}
+    <ul>
+    {% for team in team_list %}
+        <li><a href="{% url 'tournament_app:team_details' pk=team.pk %}">{{ team.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak dostępnych drużyn.</p>
+{% endif %}
+
+{% endblock %}
