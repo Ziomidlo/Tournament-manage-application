@@ -1,5 +1,7 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static %}
+
 {% block content %}
     {%if tournament.date %}
         {{tournament.date}}
@@ -7,7 +9,7 @@
     {%if tournament.logo %}
         <img src='{{tournament.logo.url}}' style='width:350px; length:350px'>
     {% else %}
-        <p>Brak zdjęcia turnieju.</p>
+        <img src= '{% static 'tournament_app/tournament.png' %}' style='width:350px; length=350px'>
     {% endif %}
     <p>{{tournament.name}}</p>
     <p>{{tournament.description}}</p>

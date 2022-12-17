@@ -1,4 +1,6 @@
 {% extends 'tournament_app/base.html' %}
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -12,10 +14,10 @@
 
     {% if user.is_authenticated %}
         {% if user.logo %}
-            <img src='{{user.logo.url}}'style='width:200px;length=200px'>
+            <img src='{{user.logo.url}}'style='width:200px; length=200px'>
         {% else %}
         {% endif %}
-            <p>Brak zdjecia profilowego.</p>
+            <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
         {%if user.is_team == false %}
             <p>Brak drużyny</p>
         {%else %}    

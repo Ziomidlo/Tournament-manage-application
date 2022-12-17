@@ -1,12 +1,14 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <h2>{{ team.name }}</h2>
 {% if team.logo %}
-    <img src='{{ team.logo.url }}' style = "width:200px; length=200px;">
+    <img src='{{ team.logo.url }}' style = 'width:200px; length=200px;'>
 {% else %}
-    <p>Brak zdjęcia drużyny.</p>
+    <img src= '{% static 'tournament_app/team.png' %}' style='width:200px; length=200px'>
 {% endif %}
 {{ team.description }}
 {% if team.is_tournament %}
