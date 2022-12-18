@@ -1,0 +1,22 @@
+{% extends 'tournament_app/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<center>
+<h2>Stwórz drużynę.</h2>
+<br/><br/>
+{% if sumbitted %}
+    Pomyślnie stworzono drużynę!
+{% else %}
+    <form action='' method = POST>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='Stwórz' class='btn btn-secondary'>
+    </form>
+</center>
+
+{% endif %}
+
+{% endblock %}

@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .forms import NewUserForm
+from .forms import NewUserForm, TeamForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 
 from .models import Tournament, User, Team
@@ -65,5 +66,22 @@ def logout_request(request):
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano.')
     return redirect('tournament_app:index')
+
+@login_required
+def create_team(request):
+    submitted = False
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/add_venue?submitted=True')
+    else:
+        form = TeamForm
+        if 'submitted' in request.GET:
+            submitted = True
+
+
+    return render(request, 'tournament_app/create_team.html', context={'form': form, 'submitted': submitted} )
+
 
 # Create your views here.
