@@ -26,5 +26,5 @@ class TeamForm(ModelForm):
 
     class Meta:
         model = Team
-        fields = ("logo", "name", "description", "players")
+        fields = ("logo", "name", "description")
     

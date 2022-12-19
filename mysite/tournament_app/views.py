@@ -53,7 +53,7 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, 'Jesteś zalogowany jako {username}.')
-                return redirect('tournament_app:index')
+                return redirect('tournament_app:create_team')
             else: 
                 messages.error(request, 'błędna nazwa użytkownika lub hasło!')
         else:
@@ -67,14 +67,14 @@ def logout_request(request):
     messages.info(request, 'Pomyślnie wylogowano.')
     return redirect('tournament_app:index')
 
-@login_required
+@login_required(login_url='/login', redirect_field_name='next')
 def create_team(request):
     submitted = False
     if request.method == 'POST':
         form = TeamForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/add_venue?submitted=True')
+            return HttpResponseRedirect('/create_team?submitted=True')
     else:
         form = TeamForm
         if 'submitted' in request.GET:
