@@ -1,0 +1,11 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+
+<form method="POST" action="{% url 'tournament_app:delete_team' pk=team.pk %}">
+    {% csrf_token %}
+    <p>Czy na pewno chcesz usunąć drużynę {{team.name}}?</p>
+    <input type="submit" value="Usuń">
+</form>
+
+{% endblock %}

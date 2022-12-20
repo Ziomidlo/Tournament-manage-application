@@ -13,7 +13,7 @@ class Team(models.Model):
     description = models.TextField(max_length=2000, verbose_name='Opis drużyny')
     is_tournament = models.BooleanField(default=False, blank=True)
     players = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    team_leader = models.BooleanField(default=False, blank=True)
+    leader = models.IntegerField(blank=False, default=1, verbose_name='Lider')
     date = models.DateField(auto_now=True)
 
 class Tournament(models.Model):
