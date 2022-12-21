@@ -75,53 +75,52 @@ def logout_request(request):
 
 @login_required(login_url='/login', redirect_field_name='next')
 def create_team(request):
-    submitted = False
     if(request.user.is_team):
-        return redirect('tournament_app:index')
+        return redirect('tournament_app:index' )
     else:
         if request.method == 'POST':
             form = TeamForm(request.POST, request.FILES)
             if form.is_valid():
                 team = form.save(commit=False)
-                team.leader = request.user.id
+                team.leader = request.user
                 User.objects.filter(pk=request.user.id).update(is_team=True)
                 team.save()
-                return HttpResponseRedirect('/create_team?submitted=True')
+                team.players.add(request.user)
+                return redirect('tournament_app:team_details', pk=team.pk)
         else:
             form = TeamForm
-            if 'submitted' in request.GET:
-                submitted = True
-        return render(request, 'tournament_app/create_team.html', context={'form': form, 'submitted': submitted} )
+        return render(request, 'tournament_app/create_team.html', context={'form': form})
 
 @login_required(login_url='/login', redirect_field_name='next')
 def update_team(request, pk): 
-        team = get_object_or_404(Team, pk = pk)
+        team = get_object_or_404(Team, pk=pk)
         form = TeamForm(request.POST or None, request.FILES, instance=team)
-        if request.user.id != team.leader:
+        if request.user.id != team.leader.id:
             return render(request, 'tournament_app/index.html')
         else:
             if request.method == 'POST':
-                if request.user.id == team.leader:
-                    if form.is_valid():
-                        form.save()
-                        return redirect('team_details', pk = team.pk)
+                if form.is_valid():
+                    form.save()
+                    return redirect('tournament_app:team_details', pk = team.pk)
                 else:
                     return redirect('tournament_app:index.html')
-            else:
-                form = TeamForm
+            else: 
+                form= TeamForm(instance=team)
             return render(request, 'tournament_app/update_team.html', context={'team': team, 'form':form})
 
 @login_required(login_url='/login')
 def delete_team(request,pk):
     team = get_object_or_404(Team, pk=pk)
-    if team.leader != request.user.id:
+    if request.user.id != team.leader.id:
         return render(request, 'tournament_app/index.html')
     else:
         if request.method == 'POST':
             team.delete()
             User.objects.filter(pk=request.user.id).update(is_team = False)
-            return redirect('tournament_app:index')
+            return redirect('tournament_app:team_list')
         return render(request, 'tournament_app/delete_team.html', context={'team': team})
 
+
+# Create your views here.
 
 # Create your views here.

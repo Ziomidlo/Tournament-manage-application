@@ -12,8 +12,19 @@
 {% else %}
     <form action='' method=POST enctype='multipart/form-data'>
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+        {% if field.label %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+        {% else %}
+            {{ field }}
+        {% endif %}
+        {% endfor %}
         <input type='submit' value='Stwórz' class='btn btn-secondary'>
+        <input type='button' value='Anuluj dodawanie pliku' class='btn btn-danger' onclick='document.getElementById("id_logo").value = ""'>
+        <a href='{% url 'tournament_app:index'}'>Powrót</a>
     </form>
 </center>
 

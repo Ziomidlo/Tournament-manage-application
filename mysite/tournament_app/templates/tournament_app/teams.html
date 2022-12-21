@@ -12,12 +12,16 @@
     <p>Brak dostępnych drużyn.</p>
 {% endif %}
 
+{% if user.is_anonymous %}
+    <p><a href='{% url 'tournament_app:login' %}'>Zaloguj się</a> by dostać dostęp do tego pola, lub stworzyć Swoją drużynę!</p>
+{% else %}
 {%if user.is_team %}
 
 {% else %}
 
-<a href='{% url 'tournament_app:create_team' %}'>Stwórz Swoją drużynę!</a>
+    <a href='{% url 'tournament_app:create_team' %}'>Stwórz Swoją drużynę!</a>
 
+{% endif %}
 {% endif %}
 
 {% endblock %}

@@ -17,8 +17,10 @@
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}
 {{ team.leader }}
-{{ team.players }}
-{% if team.leader == user.id %}
+{% for player in team.players.all %}
+    <p>Zawodnicy: {{player.username}}</p>
+{% endfor %}
+{% if team.leader.id == user.id %}
     <a href='{% url 'tournament_app:update_team' team.id %}'>Edytuj Drużynę</a>
     <a href='{% url 'tournament_app:delete_team' team.id %}'>Usuń Drużynę</a>
 {% endif %}
