@@ -14,6 +14,14 @@ from .models import Tournament, User, Team
 def index(request):
     return render(request, 'tournament_app/index.html')
 
+def user_list(request):
+    user_list = User.objects.order_by('id')
+    return render(request, 'tournament_app/user_list.html', context={'user_list': user_list})
+
+def user_details(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    return render(request, 'tournament_app/user.html', context={'user': user})
+
 @login_required(login_url='/login', redirect_field_name='torunament_list')
 def tournament_list(request):
     latest_tournament_list = Tournament.objects.order_by('id')
@@ -55,9 +63,11 @@ def login_request(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password = password)
+            user = authenticate(request, username=username, password = password)
             if user is not None:
                 login(request, user)
+                request.session['user_id'] = user.id
+                request.session['user_logged_in'] = True
                 messages.info(request, 'Jesteś zalogowany jako {username}.')
                 return redirect('tournament_app:index')
             else: 
@@ -70,6 +80,7 @@ def login_request(request):
 
 def logout_request(request):
     logout(request)
+    del request.session['user_logged_in']
     messages.info(request, 'Pomyślnie wylogowano.')
     return redirect('tournament_app:index')
 
@@ -120,7 +131,5 @@ def delete_team(request,pk):
             return redirect('tournament_app:team_list')
         return render(request, 'tournament_app/delete_team.html', context={'team': team})
 
-
-# Create your views here.
 
 # Create your views here.

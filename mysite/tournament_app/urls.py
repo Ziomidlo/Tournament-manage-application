@@ -8,6 +8,8 @@ app_name = 'tournament_app'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('users', views.user_list, name='user_list'),
+    path('user/<int:user_id>/', views.user_details, name='user_details'),
     path('tournaments', views.tournament_list, name ='tournament_list'),
     path('tournament/<int:pk>/', views.tournament_details, name='tournament_details'),
     path('teams', views.team_list, name='team_list'),

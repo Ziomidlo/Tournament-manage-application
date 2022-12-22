@@ -1,0 +1,24 @@
+{% extends 'tournament_app/base.html' %}
+
+{% load static %}
+
+    {% block content %}
+
+        {% if user.logo %}
+            <img src='{{user.logo.url}}'style='width:200px; length=200px'>
+        {% else %}
+        {% endif %}
+            <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
+        {%if user.is_team == False %}
+            <p>Drużyna: Brak drużyny</p>
+        {%else %}
+            {% for team in user.teams.all %}
+                <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
+            {% endfor %}
+    
+        {% endif %}
+        <p>informacje o użytkowniku: {{user.info}}
+
+    {% endblock %}
+</body>
+</html>
