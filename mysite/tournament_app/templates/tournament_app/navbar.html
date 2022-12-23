@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
       {% load static %}
@@ -17,13 +18,12 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'tournament_app:team_list' %}">Druzyny</a>
           </li>
-          {%if user.is_authenticated %}
-
+          {%if 'logged_in_user' in request.session %}
           <li class="nav-item">
             <a class="nav-link" href="/logout">Wyloguj</a>
           </li>
           <li class="nav-item">
-            <p>Witaj, {{user.username}}!</p>
+            <p>Witaj, {{logged_in_user}}!</p>
           </li>
             
           {% else %}

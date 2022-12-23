@@ -11,6 +11,15 @@ from django.http import HttpResponseRedirect
 from .models import Tournament, User, Team
 
 
+def navbar(request):
+    logged_in_user = request.session.get('logged_in_user', None)
+    if logged_in_user:
+        user = User.objects.get(id=logged_in_user)
+        context = {'user': user}
+    else:
+        user = None
+    return render(request, 'tournament_app/navbar.html', context=context)
+
 def index(request):
     return render(request, 'tournament_app/index.html')
 
@@ -20,7 +29,11 @@ def user_list(request):
 
 def user_details(request, user_id):
     user = get_object_or_404(User, id=user_id)
+    logged_in_user_id = request.session.get('logged_in_user', None)
+    if logged_in_user_id:
+        logged_in_user = User.objects.get(id=request.session.get('logged_in_user'))
     return render(request, 'tournament_app/user.html', context={'user': user})
+
 
 @login_required(login_url='/login', redirect_field_name='torunament_list')
 def tournament_list(request):
@@ -57,7 +70,6 @@ def register_request(request):
 def login_request(request):
     if request.user.is_authenticated:
         return redirect('tournament_app:index')
-
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -66,8 +78,8 @@ def login_request(request):
             user = authenticate(request, username=username, password = password)
             if user is not None:
                 login(request, user)
-                request.session['user_id'] = user.id
-                request.session['user_logged_in'] = True
+                request.session['logged_in_user'] = user.id
+                logged_in_user = request.session.get('logged_in_user', None)
                 messages.info(request, 'Jesteś zalogowany jako {username}.')
                 return redirect('tournament_app:index')
             else: 
@@ -79,8 +91,9 @@ def login_request(request):
         
 
 def logout_request(request):
+    if 'logged_in_user' in request.session:
+        del request.session['logged_in_user']
     logout(request)
-    del request.session['user_logged_in']
     messages.info(request, 'Pomyślnie wylogowano.')
     return redirect('tournament_app:index')
 
