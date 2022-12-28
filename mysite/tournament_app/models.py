@@ -4,7 +4,7 @@ from invitations.utils import get_invitation_model
 
 class User(AbstractUser):
     logo = models.ImageField(null=True, blank=True, upload_to="user/")
-    info = models.TextField(max_length=2000)
+    info = models.TextField(max_length=2000, blank=True, null=True)
     is_team = models.BooleanField(default=False, blank = True)
 
 class Team(models.Model):

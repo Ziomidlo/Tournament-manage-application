@@ -7,9 +7,10 @@
         {% if user.logo %}
             <img src='{{user.logo.url}}'style='width:200px; length=200px'>
         {% else %}
-        {% endif %}
             <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
+        {% endif %}
             <p>Nick: {{user.username}}
+            <p>Email: {{user.email}}
         {%if user.is_team == False %}
             <p>Drużyna: Brak drużyny</p>
         {%else %}
@@ -18,7 +19,7 @@
             {% endfor %}
     
         {% endif %}
-        <p>informacje o użytkowniku: {{user.info}}
+        <p>Informacje o użytkowniku: {{user.info}}</p>
         <p><a href='{% url 'tournament_app:user_list' %}'>Powrót</a></p>
 
     {% endblock %}

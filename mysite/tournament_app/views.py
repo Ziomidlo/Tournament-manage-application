@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .forms import NewUserForm, TeamForm
+from .forms import NewUserForm, TeamForm, UserForm, InvitationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from invitations.models import Invitation
+from django.core.mail import send_mail
 
 
 from .models import Tournament, User, Team
@@ -79,7 +81,7 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 request.session['logged_in_user'] = user.id
-                logged_in_user = request.session.get('logged_in_user', None)
+                request.session.get('logged_in_user', None)
                 messages.info(request, 'Jesteś zalogowany jako {username}.')
                 return redirect('tournament_app:index')
             else: 
@@ -129,8 +131,8 @@ def update_team(request, pk):
                 else:
                     return redirect('tournament_app:index.html')
             else: 
-                form= TeamForm(instance=team)
-            return render(request, 'tournament_app/update_team.html', context={'team': team, 'form':form})
+                form = TeamForm(instance=team)
+            return render(request, 'tournament_app/update_team.html', context={'team': team, 'form': form})
 
 @login_required(login_url='/login')
 def delete_team(request,pk):
@@ -143,6 +145,69 @@ def delete_team(request,pk):
             User.objects.filter(pk=request.user.id).update(is_team = False)
             return redirect('tournament_app:team_list')
         return render(request, 'tournament_app/delete_team.html', context={'team': team})
+
+@login_required(login_url='/login')
+def update_user(request, pk):
+    user = get_object_or_404(User,pk=pk)
+    form = UserForm(request.POST or None, request.FILES, instance=user)
+    if request.user != user:
+        return redirect('tournament_app:index')
+    else: 
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                return redirect('tournament_app:index')
+            else:
+                return redirect('tournament_app:index')
+        else:
+            form = UserForm(instance=user)
+        return render(request, 'tournament_app/update_user.html', context={'user': user, 'form': form})
+
+def send_invitation_email(invitation):
+    subject = f'Zaproszenie do drużyny {invitation.team.name}'
+    message = f'{invitation.sender.username} zaprasza Cię do dołączenia do drużyny {invitation.team.name}. Wiadomość od nadawcy: {invitation.message}'
+    recipients = [invitation.recipient.email]
+    send_mail(subject, message, 'noreply@example.com', recipients)
+
+@login_required(login_url='/login')
+def invite_user(request,pk):
+    team = get_object_or_404(Team,pk=pk)
+    form = InvitationForm(request.POST or None )
+
+    if request.user != team.leader.id:
+        return redirect('tournament_app:index')
+    else:
+        if request.method == 'POST':
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                message = form.cleaned_data['message']
+                try:
+                    user = User.objects.get(username=username)
+                except User.DoesNotExist:
+                    messages.error(request, 'Podany użytkownik nie istnieje')
+                    return redirect('tournament_app:invite_user', pk=pk)
+                if user in team.players.all():
+                    messages.error(request, 'Użytkownik jest już w drużynie')
+                    return redirect('tournament_app:invite_user', pk=pk)
+                if team.players.count() >= 5:
+                    messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
+                    return redirect('tournament_app:invite_user', pk=pk)
+                # Tworzymy obiekt zaproszenia
+                invitation = Invitation.objects.create(
+                    team=team,
+                    sender=request.user,
+                    recipient=user,
+                    message=message
+                )
+            
+                # Wysyłamy powiadomienie do odbiorcy
+                send_invitation_email(invitation)
+                messages.success(request, 'Zaproszenie zostało wysłane')
+                return redirect('tournament_app:index')
+            else:
+                form = InvitationForm()
+    return render(request, 'tournament_app/invite_user.html', context={'form': form, 'team': team})
+
 
 
 # Create your views here.

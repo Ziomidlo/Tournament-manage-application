@@ -5,9 +5,9 @@
 {% block content %}
 
 <center>
-    <h2>Edytuj Drużyne</h2>
+    <h2>Edytuj Informacje</h2>
     <br/>
-    <form method=POST action='{% url 'tournament_app:update_team' pk=team.pk %}' enctype='multipart/form-data'>
+    <form method=POST action='{% url 'tournament_app:update_user' pk=user.pk %}' enctype='multipart/form-data'>
         {% csrf_token %}
         {% for field in form %}
         {% if field.label %}
@@ -21,8 +21,9 @@
         {% endfor %}
         <input type='submit' value='Zaktualizuj' class='btn btn-secondary'>
         <input type='button' value='Anuluj dodawanie pliku' class='btn btn-danger' onclick='document.getElementById("id_logo").value = ""'>
-        <a href='{% url 'tournament_app:team_details' pk=team.pk %}'>Powrót</a>
+        <a href='{% url 'tournament_app:index' %}'>Powrót</a>
     </form>
-</center
+</center>
+
 
 {% endblock %}

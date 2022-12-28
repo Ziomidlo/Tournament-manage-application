@@ -20,4 +20,6 @@ urlpatterns = [
     path('create_team', views.create_team, name='create_team'),
     path('update_team/<int:pk>/', views.update_team, name='update_team'),
     path('delete_team/<int:pk>/', views.delete_team, name='delete_team'),
+    path('update_user/<int:pk>/', views.update_user, name='update_user'),
+    path('invite_user/<int:pk>/', views.invite_user, name='invite_user'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

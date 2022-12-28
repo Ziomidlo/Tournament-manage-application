@@ -27,4 +27,14 @@ class TeamForm(ModelForm):
     class Meta:
         model = Team
         fields = ("logo", "name", "description")
+
+class UserForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ("logo", "info")
+
+class InvitationForm(forms.Form):
+    username = forms.CharField(label='Nazwa użytkownika', max_length=100)
+    message = forms.CharField(widget=forms.Textarea, label='Wiadomość')
     

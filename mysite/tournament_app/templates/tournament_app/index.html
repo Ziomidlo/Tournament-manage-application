@@ -1,24 +1,17 @@
 {% include 'tournament_app/base.html' %}
 
-{% load static %}
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament application</title>
-</head>
-<body>
+    {% load static %}
+
     {% block content %}
 
     {% if user.is_authenticated %}
         {% if user.logo %}
             <img src='{{user.logo.url}}'style='width:200px; length=200px'>
         {% else %}
-        {% endif %}
             <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
+        {% endif %}
             <p>Jesteś zalogowany jako: {{user.username}}
+            <p>Email: {{user.email}}
         {%if user.is_team == False %}
             <p>Drużyna: W tym momencie nie posiadasz żadnej drużyny: <a href='{% url 'tournament_app:create_team' %}'>Stwórz</a> ją właśnie teraz!</p>
         {%else %}
@@ -26,7 +19,10 @@
                     <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
                 {% endfor %}
         {% endif %}
-        <p>informacje o użytkowniku: {{user.info}}
+            <p>Informacje o użytkowniku: {{user.info}}</p>
+        {% if 'logged_in_user' in request.session %}
+            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}'>Zaktualizuj </a>Swoje dane</p
+        {% endif %}
     {% else %}
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>
     {% endif %}

@@ -18,11 +18,12 @@
 {% endif %}
 {{ team.leader }}
 {% for player in team.players.all %}
-    <p>Zawodnicy: {{player.username}}</p>
+    <p>Zawodnicy: <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></p>
 {% endfor %}
 {% if team.leader.id == user.id %}
     <a href='{% url 'tournament_app:update_team' team.id %}'>Edytuj Drużynę</a>
     <a href='{% url 'tournament_app:delete_team' team.id %}'>Usuń Drużynę</a>
+    <a href='{% url 'tournament_app:invite_user' pk=team.pk %}'>Dodaj</a>
 {% endif %}
 
 {% endblock %}
