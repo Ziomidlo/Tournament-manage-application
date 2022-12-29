@@ -25,6 +25,16 @@ class Tournament(models.Model):
     mvp = models.BooleanField(default=False, blank=True)
     date = models.DateTimeField(auto_now=True)
 
+class Invitation(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_sent')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_received')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def str(self):
+        return f'Wysłano zaproszenie do drużyny {self.team.name}'
+
 
 
 

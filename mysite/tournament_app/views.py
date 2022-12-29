@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .forms import NewUserForm, TeamForm, UserForm, InvitationForm
+from .forms import NewUserForm, TeamForm, UserForm, InvitationForm, AcceptInvitationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -172,42 +172,59 @@ def send_invitation_email(invitation):
 @login_required(login_url='/login')
 def invite_user(request,pk):
     team = get_object_or_404(Team,pk=pk)
-    form = InvitationForm(request.POST or None )
+    form = InvitationForm(request.POST or None)
 
-    if request.user != team.leader.id:
+    if request.user.id != team.leader.id:
         return redirect('tournament_app:index')
     else:
         if request.method == 'POST':
             if form.is_valid():
-                username = form.cleaned_data['username']
-                message = form.cleaned_data['message']
+                invitation = form.save(commit=False)
+                messages.success(request, 'Zaproszenie zostało wysłane')
+                invitation.team = team
+                invitation.sender = request.user
                 try:
-                    user = User.objects.get(username=username)
+                    recipient = User.objects.get(username=form.cleaned_data['recipient'])
                 except User.DoesNotExist:
                     messages.error(request, 'Podany użytkownik nie istnieje')
                     return redirect('tournament_app:invite_user', pk=pk)
-                if user in team.players.all():
+                if recipient in team.players.all():
                     messages.error(request, 'Użytkownik jest już w drużynie')
                     return redirect('tournament_app:invite_user', pk=pk)
                 if team.players.count() >= 5:
                     messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
                     return redirect('tournament_app:invite_user', pk=pk)
-                # Tworzymy obiekt zaproszenia
-                invitation = Invitation.objects.create(
-                    team=team,
-                    sender=request.user,
-                    recipient=user,
-                    message=message
-                )
-            
-                # Wysyłamy powiadomienie do odbiorcy
-                send_invitation_email(invitation)
+                invitation.recipient = recipient
+                invitation.save()
                 messages.success(request, 'Zaproszenie zostało wysłane')
                 return redirect('tournament_app:index')
             else:
                 form = InvitationForm()
+        else:
+            form = InvitationForm()
     return render(request, 'tournament_app/invite_user.html', context={'form': form, 'team': team})
 
 
+@login_required(login_url='/login')
+def get_invitation(request, pk):
+    invitation = get_object_or_404(Invitation, pk=pk)
+    if request.user != invitation.recipient:
+        return redirect('tournament_app:index')
+    else:
+        form = AcceptInvitationForm(request.POST or None)
+        if request.method == 'POST':
+            if form.is_valid():
+                if form.cleaned_data['accept']:
+                    invitation.accept()
+                    invitation.team.players.add(request.user)
+                    invitation.delete()
+                    messages.success(request, 'Zaproszenie zostało zaakceptowane')
+                else:
+                    invitation.delete()
+                    messages.success(request, 'Zaproszenie zostało odrzucone')
+                return redirect('tournament_app:index')
+        else:
+            form = AcceptInvitationForm()
+        return render(request, 'tournament_app/get_invitation.html', context={'form': form, 'invitation': invitation})
 
 # Create your views here.

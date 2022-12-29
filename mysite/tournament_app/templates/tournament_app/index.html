@@ -21,7 +21,13 @@
         {% endif %}
             <p>Informacje o użytkowniku: {{user.info}}</p>
         {% if 'logged_in_user' in request.session %}
-            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}'>Zaktualizuj </a>Swoje dane</p
+            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}'>Zaktualizuj </a>Swoje dane</p>
+            <p> Zaproszenia: </p>
+            {% for invitation in user.invitations_received.all %}
+            <ul>
+                <li><a href='{% url 'tournament_app:get_invitation' pk=invitation.pk %}'>{{ invitation.message }}</a></li>
+            </ul>
+            {% endfor %}
         {% endif %}
     {% else %}
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>

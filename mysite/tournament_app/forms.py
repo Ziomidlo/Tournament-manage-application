@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
-from .models import Team
+from .models import Team, Invitation
 
 User = get_user_model()
 
@@ -34,7 +34,15 @@ class UserForm(ModelForm):
         model = User
         fields = ("logo", "info")
 
-class InvitationForm(forms.Form):
-    username = forms.CharField(label='Nazwa użytkownika', max_length=100)
-    message = forms.CharField(widget=forms.Textarea, label='Wiadomość')
+class InvitationForm(ModelForm):
+    
+    class Meta:
+        model = Invitation
+        fields = ("team", "sender", "recipient", "message")
+
+class AcceptInvitationForm(forms.Form):
+    accept = forms.BooleanField(label='Akceptuj zaproszenie')
+
+    
+    
     

@@ -1,0 +1,22 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Odbierz zaproszenie</h2>
+  
+    {% if invitation %}
+    <p>Otrzymałeś zaproszenie od użytkownika {{ invitation.sender }} do drużyny {{ invitation.team }}:</p>
+    <p>Wiadomość: {{ invitation.message }}</p>
+  
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="btn btn-success" value="Akceptuj">
+      <input type="submit" class="btn btn-danger" value="Odrzuć">
+    </form>
+  </div>
+
+{% endblock %}
+
+
