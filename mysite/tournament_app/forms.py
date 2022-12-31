@@ -35,10 +35,12 @@ class UserForm(ModelForm):
         fields = ("logo", "info")
 
 class InvitationForm(ModelForm):
+    recipient = forms.ModelChoiceField(queryset=User.objects.filter(is_team=False))
     
     class Meta:
         model = Invitation
-        fields = ("team", "sender", "recipient", "message")
+        fields =  ("recipient", "message")
+
 
 class AcceptInvitationForm(forms.Form):
     accept = forms.BooleanField(label='Akceptuj zaproszenie')

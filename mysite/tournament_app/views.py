@@ -7,7 +7,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from invitations.models import Invitation
-from django.core.mail import send_mail
 
 
 from .models import Tournament, User, Team
@@ -63,6 +62,8 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            request.session['logged_in_user'] = user.id
+            request.session.get('logged_in_user', None)
             messages.success(request, 'Pomyślnie zarejestrowano!')
             return redirect('tournament_app:index')
         messages.error(request, 'Rejestracja nieudana!')
@@ -163,12 +164,6 @@ def update_user(request, pk):
             form = UserForm(instance=user)
         return render(request, 'tournament_app/update_user.html', context={'user': user, 'form': form})
 
-def send_invitation_email(invitation):
-    subject = f'Zaproszenie do drużyny {invitation.team.name}'
-    message = f'{invitation.sender.username} zaprasza Cię do dołączenia do drużyny {invitation.team.name}. Wiadomość od nadawcy: {invitation.message}'
-    recipients = [invitation.recipient.email]
-    send_mail(subject, message, 'noreply@example.com', recipients)
-
 @login_required(login_url='/login')
 def invite_user(request,pk):
     team = get_object_or_404(Team,pk=pk)
@@ -217,6 +212,7 @@ def get_invitation(request, pk):
                 if form.cleaned_data['accept']:
                     invitation.accept()
                     invitation.team.players.add(request.user)
+                    User.objects.filter(pk=request.user.id).update(is_team=True)
                     invitation.delete()
                     messages.success(request, 'Zaproszenie zostało zaakceptowane')
                 else:

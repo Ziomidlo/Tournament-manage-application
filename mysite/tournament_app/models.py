@@ -27,8 +27,8 @@ class Tournament(models.Model):
 
 class Invitation(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_sent')
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_received')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient', to_field = 'username')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

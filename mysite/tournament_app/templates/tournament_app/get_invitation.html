@@ -9,7 +9,7 @@
     <p>Otrzymałeś zaproszenie od użytkownika {{ invitation.sender }} do drużyny {{ invitation.team }}:</p>
     <p>Wiadomość: {{ invitation.message }}</p>
   
-    <form method="post" enctype="multipart/form-data">
+    <form method=POST action='{% url 'tournament_app:get_invitation' pk=invitation.pk %}' enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" class="btn btn-success" value="Akceptuj">

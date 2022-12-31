@@ -23,7 +23,7 @@
         {% if 'logged_in_user' in request.session %}
             <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}'>Zaktualizuj </a>Swoje dane</p>
             <p> Zaproszenia: </p>
-            {% for invitation in user.invitations_received.all %}
+            {% for invitation in user.recipient.all %}
             <ul>
                 <li><a href='{% url 'tournament_app:get_invitation' pk=invitation.pk %}'>{{ invitation.message }}</a></li>
             </ul>
