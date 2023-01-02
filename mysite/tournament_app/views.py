@@ -7,7 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from invitations.models import Invitation
-
+from django.db.models import Q
+from itertools import chain
 
 from .models import Tournament, User, Team
 
@@ -28,11 +29,8 @@ def user_list(request):
     user_list = User.objects.order_by('id')
     return render(request, 'tournament_app/user_list.html', context={'user_list': user_list})
 
-def user_details(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    logged_in_user_id = request.session.get('logged_in_user', None)
-    if logged_in_user_id:
-        logged_in_user = User.objects.get(id=request.session.get('logged_in_user'))
+def user_details(request, pk):
+    user = get_object_or_404(User, pk=pk)
     return render(request, 'tournament_app/user.html', context={'user': user})
 
 
@@ -223,4 +221,16 @@ def get_invitation(request, pk):
             form = AcceptInvitationForm()
         return render(request, 'tournament_app/get_invitation.html', context={'form': form, 'invitation': invitation})
 
+def search(request):
+    query = request.GET.get('search')
+    print(query)
+    if query:
+        teams = Team.objects.filter(name__icontains=query)
+        users = User.objects.filter(username__icontains=query)
+        tournaments = Tournament.objects.filter(name__icontains=query)
+    else:
+        teams = User.objects.none()
+        users = User.objects.none()
+        tournaments = Tournament.objects.none()
+    return render(request, 'tournament_app/search.html', {'teams': teams, 'users': users, 'tournaments': tournaments, 'query':query})
 # Create your views here.

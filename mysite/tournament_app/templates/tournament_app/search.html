@@ -1,0 +1,24 @@
+{% extends 'tournament_app/base.html' %}
+
+{%load static %}
+
+{% block content %}
+
+<h2>Wyniki wyszukiwania frazy: {{query}}</h2>
+{%if teams or users or tournaments %}
+    {% for team in teams %}
+    <p> Nazwa drużyny: <a href='{{ team.get_absolute_url }}'>{{ team.name }}</a></p>
+    {% endfor %}
+
+    {% for user in users %}
+        <p>Nazwa użytkownika: <a href='{{ user.get_absolute_url }}'>{{ user.username }}</a></p>
+    {% endfor %}
+
+    {% for tournament in tournaments %}
+        <p> Nazwa turnieju: <a href='{{ tournament.get_absolute_url }}'>{{ tournament.name }}</a></p>
+    {% endfor %}
+{% else %}
+    <p>Brak wyników podczas wyszukiwania!</p>
+{% endif %}
+{% endblock %}
+    

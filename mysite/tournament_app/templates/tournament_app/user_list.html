@@ -11,7 +11,7 @@
     {% else %}
         <img src= '{% static 'tournament_app/user.png' %}' style='width:50px; length=50px;'>
     {% endif %}
-    <p><a href="{% url 'tournament_app:user_details' user_id=user.id %}">{{ user.username }}</a></p>    
+    <p><a href="{% url 'tournament_app:user_details' pk=user.pk %}">{{ user.username }}</a></p>    
     {% if user.is_team %}
         {% for team in user.teams.all %}
             <p><a href='{% url 'tournament_app:team_details' pk=team.pk %}'>{{team.name}}</a>

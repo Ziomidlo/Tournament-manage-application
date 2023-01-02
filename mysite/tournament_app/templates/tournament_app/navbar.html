@@ -1,13 +1,12 @@
-
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
       {% load static %}
-      <a class="navbar-brand" href="{% url 'tournament_app:index'  %}"><img src= "{% static 'tournament_app/logo.png' %}" style="width:100px;height:100px;"></a>
+      <a class="navbar-brand" href="{% url 'tournament_app:index' %}"><img src= "{% static 'tournament_app/logo.png' %}" style="width:100px;height:100px;"></a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">         
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+          <form method='GET' action='{% url 'tournament_app:search' %}' class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Wyszukaj" aria-label="search" name='search'>
+            <button class="btn btn-outline-success" type="submit">Wyszukaj</button>
           </form>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'tournament_app:user_list' %}">Użytkownicy</a>
