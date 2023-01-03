@@ -201,6 +201,7 @@ def invite_user(request,pk):
 @login_required(login_url='/login')
 def get_invitation(request, pk):
     invitation = get_object_or_404(Invitation, pk=pk)
+    print(invitation)
     if request.user != invitation.recipient:
         return redirect('tournament_app:index')
     else:
@@ -221,9 +222,13 @@ def get_invitation(request, pk):
             form = AcceptInvitationForm()
         return render(request, 'tournament_app/get_invitation.html', context={'form': form, 'invitation': invitation})
 
+def invitations_list(request):
+    invitations = get_object_or_404(Invitation)
+    print(invitations)
+    render(request, 'tournament_app/invitations_list.html', {'invitations': invitations})
+
 def search(request):
     query = request.GET.get('search')
-    print(query)
     if query:
         teams = Team.objects.filter(name__icontains=query)
         users = User.objects.filter(username__icontains=query)

@@ -42,9 +42,6 @@ class Invitation(models.Model):
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
-        return f'Wysłano zaproszenie do drużyny {self.team.name}'
-
 
 
 
