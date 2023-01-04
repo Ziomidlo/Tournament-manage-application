@@ -16,9 +16,10 @@
 {% else %}
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}
-{{ team.leader }}
+<p>Lider drużyny: <a href='{{ team.leader.get_absolute_url }}'>{{ team.leader.username }}</a></p>
+<p>Zawodnicy: </p>
 {% for player in team.players.all %}
-    <p>Zawodnicy: <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></p>
+     <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></br></br>
 {% endfor %}
 {% if team.leader.id == user.id %}
     <a href='{% url 'tournament_app:update_team' team.id %}'>Edytuj Drużynę</a>

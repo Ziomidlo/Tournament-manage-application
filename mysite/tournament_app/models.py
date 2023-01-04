@@ -23,6 +23,9 @@ class Team(models.Model):
     def get_absolute_url(self):
         return reverse('tournament_app:team_details', kwargs={'pk': self.pk})
 
+    def __str__(self):
+        return self.name
+
 class Tournament(models.Model):
     logo = models.ImageField(null=True, blank=True, upload_to="tournament/")
     name = models.CharField(max_length=200)
@@ -38,9 +41,29 @@ class Tournament(models.Model):
 class Invitation(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient', to_field = 'username')
-    message = models.TextField()
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient', to_field = 'username', verbose_name='Odbiorca')
+    message = models.TextField(verbose_name='Wiadomość')
+    accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+    # Sprawdź, czy zaproszenie nie zostało już zaakceptowane lub odrzucone
+        if self.accepted:
+            return False
+    # Sprawdź, czy drużyna nie osiągnęła już maksymalnego limitu zawodników
+        if self.team.players.count() >= 5:
+            return False
+        return True
+
+    
+    def accept(self):
+        # Sprawdź, czy zaproszenie jest ważne (np. czy nie zostało już zaakceptowane lub odrzucone)
+        if self.is_valid():
+            # Dodaj odbiorcę zaproszenia do drużyny
+            self.team.players.add(self.recipient)
+            # Oznacz zaproszenie jako zaakceptowane
+            self.accepted = True
+            self.save()
 
 
 

@@ -6,11 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from invitations.models import Invitation
-from django.db.models import Q
-from itertools import chain
 
-from .models import Tournament, User, Team
+from .models import Tournament, User, Team, Invitation
 
 
 def navbar(request):
@@ -166,6 +163,7 @@ def update_user(request, pk):
 def invite_user(request,pk):
     team = get_object_or_404(Team,pk=pk)
     form = InvitationForm(request.POST or None)
+    invitations = Invitation.objects.filter(recipient=recipient, team=team, accepted=False)
 
     if request.user.id != team.leader.id:
         return redirect('tournament_app:index')
@@ -186,6 +184,12 @@ def invite_user(request,pk):
                     return redirect('tournament_app:invite_user', pk=pk)
                 if team.players.count() >= 5:
                     messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
+                    return redirect('tournament_app:invite_user', pk=pk)
+                if recipient in invitation.team.all():
+                    messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
+                    return redirect('tournament_app:invite_user', pk=pk)
+                if invitations.exists():
+                    messages.error(request, 'Odbiorca już otrzymał zaproszenie od tej drużyny')
                     return redirect('tournament_app:invite_user', pk=pk)
                 invitation.recipient = recipient
                 invitation.save()
@@ -221,11 +225,6 @@ def get_invitation(request, pk):
         else:
             form = AcceptInvitationForm()
         return render(request, 'tournament_app/get_invitation.html', context={'form': form, 'invitation': invitation})
-
-def invitations_list(request):
-    invitations = get_object_or_404(Invitation)
-    print(invitations)
-    render(request, 'tournament_app/invitations_list.html', {'invitations': invitations})
 
 def search(request):
     query = request.GET.get('search')

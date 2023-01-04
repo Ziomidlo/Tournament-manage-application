@@ -24,5 +24,4 @@ urlpatterns = [
     path('invite_user/<int:pk>/', views.invite_user, name='invite_user'),
     path('get_invitation/<int:pk>/', views.get_invitation, name='get_invitation'),
     path('search/', views.search, name='search'),
-    path('invitations_list', views.invitations_list, name='invitations_list'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
