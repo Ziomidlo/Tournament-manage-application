@@ -20,11 +20,17 @@
 <p>Zawodnicy: </p>
 {% for player in team.players.all %}
      <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></br></br>
+     {% if team.leader.id == user.id %}
+        <a href='{% url 'tournament_app:remove_player' team.pk player.pk %}'>Usuń</a></br>
+    {% endif %}
 {% endfor %}
 {% if team.leader.id == user.id %}
     <a href='{% url 'tournament_app:update_team' team.id %}'>Edytuj Drużynę</a>
     <a href='{% url 'tournament_app:delete_team' team.id %}'>Usuń Drużynę</a>
     <a href='{% url 'tournament_app:invite_user' pk=team.pk %}'>Dodaj</a>
+{% endif %}
+{% if user in team.players.all %}
+    <a href='{% url 'tournament_app:leave_team' pk=team.pk %}'>Opuść drużynę</a>
 {% endif %}
 
 {% endblock %}

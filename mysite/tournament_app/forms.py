@@ -43,7 +43,8 @@ class InvitationForm(ModelForm):
 
 
 class AcceptInvitationForm(forms.Form):
-    accept = forms.BooleanField(label='Akceptuj zaproszenie')
+    accept = forms.ChoiceField(label='Czy zaakceptować zaproszenie?', choices=[(True, 'Tak'), (False, 'Nie')], widget=forms.RadioSelect)
+
 
     
     

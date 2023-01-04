@@ -1,0 +1,11 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+    <h2>Usunięcie gracza z drużyny</h2>
+    <p>Czy na pewno chcesz usunąć gracza {{ player.username }} z drużyny {{ team.name }}?</p>
+    <form method='POST' action='{% url 'tournament_app:remove_player' team_pk=team.pk player_pk=player.pk %}'>
+        {% csrf_token %}
+        <button type='submit' class='btn btn-danger'>Usuń gracza</button>
+        <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class='btn btn-secondary'>Anuluj</a>
+    </form>
+{% endblock %}

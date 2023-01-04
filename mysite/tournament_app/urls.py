@@ -24,4 +24,6 @@ urlpatterns = [
     path('invite_user/<int:pk>/', views.invite_user, name='invite_user'),
     path('get_invitation/<int:pk>/', views.get_invitation, name='get_invitation'),
     path('search/', views.search, name='search'),
+    path('remove_player/<int:team_pk>/<int:player_pk>/', views.remove_player, name='remove_player'),
+    path('leave_team/<int:pk>/', views.leave_team, name='leave_team'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

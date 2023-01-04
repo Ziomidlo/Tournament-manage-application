@@ -143,6 +143,35 @@ def delete_team(request,pk):
         return render(request, 'tournament_app/delete_team.html', context={'team': team})
 
 @login_required(login_url='/login')
+def remove_player(request, team_pk, player_pk):
+    team = get_object_or_404(Team, pk=team_pk)
+    player = get_object_or_404(User, pk=player_pk)
+    if request.user.id != team.leader.id:
+        return render(request, 'tournament_app/index.html')
+    if request.method == 'POST':
+        team.players.remove(player)
+        User.objects.filter(pk=player_pk).update(is_team=False)
+        messages.success(request, f'{player.username} został usunięty z drużyny {team.name}')
+        return redirect('tournament_app:team_details', pk=team.pk)
+    else:
+        return render(request, 'tournament_app/remove_player.html', context={'team': team, 'player': player})
+
+@login_required(login_url='/login')
+def leave_team(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    user = request.user
+    if user.is_team and user in team.players.all():
+        team.players.remove(user)
+        User.objects.filter(pk=user.id).update(is_team=False)
+        messages.success(request, 'Opuściłeś drużynę')
+        return render('tournament_app:index')
+    else:
+        messages.error(request, 'Nie jesteś w żadnej drużynie')
+    return render(request, 'tournament_app/leave_team.html', context={'team': team})
+
+
+
+@login_required(login_url='/login')
 def update_user(request, pk):
     user = get_object_or_404(User,pk=pk)
     form = UserForm(request.POST or None, request.FILES, instance=user)
@@ -163,7 +192,6 @@ def update_user(request, pk):
 def invite_user(request,pk):
     team = get_object_or_404(Team,pk=pk)
     form = InvitationForm(request.POST or None)
-    invitations = Invitation.objects.filter(recipient=recipient, team=team, accepted=False)
 
     if request.user.id != team.leader.id:
         return redirect('tournament_app:index')
@@ -176,7 +204,7 @@ def invite_user(request,pk):
                 invitation.sender = request.user
                 try:
                     recipient = User.objects.get(username=form.cleaned_data['recipient'])
-                except User.DoesNotExist:
+                except User.DoesNotExist:                    
                     messages.error(request, 'Podany użytkownik nie istnieje')
                     return redirect('tournament_app:invite_user', pk=pk)
                 if recipient in team.players.all():
@@ -185,11 +213,8 @@ def invite_user(request,pk):
                 if team.players.count() >= 5:
                     messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
                     return redirect('tournament_app:invite_user', pk=pk)
-                if recipient in invitation.team.all():
-                    messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
-                    return redirect('tournament_app:invite_user', pk=pk)
-                if invitations.exists():
-                    messages.error(request, 'Odbiorca już otrzymał zaproszenie od tej drużyny')
+                if Invitation.objects.filter(recipient=recipient, team=team).exists():
+                    messages.error(request, 'Użytkownik ma już zaproszenie od tej drużyny')
                     return redirect('tournament_app:invite_user', pk=pk)
                 invitation.recipient = recipient
                 invitation.save()
@@ -212,13 +237,14 @@ def get_invitation(request, pk):
         form = AcceptInvitationForm(request.POST or None)
         if request.method == 'POST':
             if form.is_valid():
-                if form.cleaned_data['accept']:
+                if form.cleaned_data['accept'] == True:
                     invitation.accept()
                     invitation.team.players.add(request.user)
                     User.objects.filter(pk=request.user.id).update(is_team=True)
                     invitation.delete()
                     messages.success(request, 'Zaproszenie zostało zaakceptowane')
                 else:
+                    invitation.reject()
                     invitation.delete()
                     messages.success(request, 'Zaproszenie zostało odrzucone')
                 return redirect('tournament_app:index')

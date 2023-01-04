@@ -65,6 +65,10 @@ class Invitation(models.Model):
             self.accepted = True
             self.save()
 
+    def reject(self):
+        self.accepted = False
+        self.save()
+
 
 
 
