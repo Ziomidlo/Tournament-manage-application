@@ -4,6 +4,14 @@
 
     {% block content %}
 
+    {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
     {% if user.is_authenticated %}
         {% if user.logo %}
             <img src='{{user.logo.url}}'style='width:200px; length=200px'>

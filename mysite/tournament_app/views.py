@@ -51,7 +51,6 @@ def team_details(request, pk):
 def register_request(request):
     if request.user.is_authenticated:
         return redirect('tournament_app:index')
-
     if request.method == 'POST':
         form = NewUserForm(request.POST)
         if form.is_valid():
@@ -78,12 +77,12 @@ def login_request(request):
                 login(request, user)
                 request.session['logged_in_user'] = user.id
                 request.session.get('logged_in_user', None)
-                messages.info(request, 'Jesteś zalogowany jako {username}.')
+                messages.success(request, 'Pomyślnie zalogowano!')
                 return redirect('tournament_app:index')
             else: 
-                messages.error(request, 'błędna nazwa użytkownika lub hasło!')
+                messages.error(request, 'Błędna nazwa użytkownika lub hasło!')
         else:
-            messages.error(request,'błędna nazwa użytkownika lub hasło!')
+            messages.error(request,'Błędna nazwa użytkownika lub hasło!')
     form = AuthenticationForm()
     return render(request=request, template_name='tournament_app/login.html', context={'login_form': form})
         
@@ -92,7 +91,7 @@ def logout_request(request):
     if 'logged_in_user' in request.session:
         del request.session['logged_in_user']
     logout(request)
-    messages.info(request, 'Pomyślnie wylogowano.')
+    messages.success(request, 'Pomyślnie wylogowano.')
     return redirect('tournament_app:index')
 
 @login_required(login_url='/login', redirect_field_name='next')
@@ -230,21 +229,23 @@ def invite_user(request,pk):
 @login_required(login_url='/login')
 def get_invitation(request, pk):
     invitation = get_object_or_404(Invitation, pk=pk)
-    print(invitation)
     if request.user != invitation.recipient:
         return redirect('tournament_app:index')
     else:
         form = AcceptInvitationForm(request.POST or None)
         if request.method == 'POST':
             if form.is_valid():
-                if form.cleaned_data['accept'] == True:
+                accept = form.cleaned_data['accept']
+                print(accept)
+                if accept == True:
+                    print(accept)
                     invitation.accept()
                     invitation.team.players.add(request.user)
                     User.objects.filter(pk=request.user.id).update(is_team=True)
                     invitation.delete()
                     messages.success(request, 'Zaproszenie zostało zaakceptowane')
                 else:
-                    invitation.reject()
+                    print(accept)
                     invitation.delete()
                     messages.success(request, 'Zaproszenie zostało odrzucone')
                 return redirect('tournament_app:index')

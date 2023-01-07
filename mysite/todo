@@ -1,7 +1,4 @@
 don't forget about notifications model in future and tournament history.
-try to display usernames at navbar with logged in session.
 let's try to do a tournament things.
-let's try to redirect and define 'next' atribute.
 change password function
-Leave team or delete team in index.
 when admin goes form admin panel automaticaly logout
