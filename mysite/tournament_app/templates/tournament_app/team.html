@@ -4,6 +4,15 @@
 
 {% block content %}
 
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
+
 <h2>{{ team.name }}</h2>
 {% if team.logo %}
     <img src='{{ team.logo.url }}' style = 'width:200px; length=200px;'>
@@ -36,9 +45,10 @@
     <a href='{% url 'tournament_app:delete_team' team.id %}'>Usuń Drużynę</a>
     <a href='{% url 'tournament_app:invite_user' pk=team.pk %}'>Dodaj Zawodnika</a>
 {% endif %}
-<a href='{% url 'tournament_app:team_list' %}'>Powrót</a>
-{% if player in team.players.all and team.leader.id != request.user.id %}
+
+{% if user in team.players.all and team.leader.id != request.user.id %}
     <a href='{% url 'tournament_app:leave_team' pk=team.pk %}'>Opuść drużynę</a>
 {% endif %}
+<a href='{% url 'tournament_app:team_list' %}'>Powrót</a>
 
 {% endblock %}

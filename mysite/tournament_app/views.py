@@ -107,6 +107,7 @@ def create_team(request):
                 User.objects.filter(pk=request.user.id).update(is_team=True)
                 team.save()
                 team.players.add(request.user)
+                messages.success(request, 'Pomyślnie utworzono drużynę!')
                 return redirect('tournament_app:team_details', pk=team.pk)
         else:
             form = TeamForm
@@ -122,8 +123,10 @@ def update_team(request, pk):
             if request.method == 'POST':
                 if form.is_valid():
                     form.save()
+                    messages.success(request, 'Pomyślnie zaktualizowano dane drużyny!')
                     return redirect('tournament_app:team_details', pk = team.pk)
                 else:
+                    messages.error(request, 'Nie udało się zaktualizować danych drużyny!')
                     return redirect('tournament_app:index.html')
             else: 
                 form = TeamForm(instance=team)
@@ -136,22 +139,30 @@ def delete_team(request,pk):
         return render(request, 'tournament_app/index.html')
     else:
         if request.method == 'POST':
+            for player in team.players.all():
+                player.is_team = False
+                player.save()
             team.delete()
-            User.objects.filter(pk=request.user.id).update(is_team = False)
-            return redirect('tournament_app:team_list')
+            messages.success(request, 'Pomyślnie usunięto drużynę!')
+            return redirect('tournament_app:index')
         return render(request, 'tournament_app/delete_team.html', context={'team': team})
 
 @login_required(login_url='/login')
 def remove_player(request, team_pk, player_pk):
     team = get_object_or_404(Team, pk=team_pk)
     player = get_object_or_404(User, pk=player_pk)
-    if request.user.id != team.leader.id:
+    if request.user.id != team.leader.id or player not in team.players.all():
+        messages.error(request, 'Nie masz do tego dostępu!')
         return render(request, 'tournament_app/index.html')
     if request.method == 'POST':
-        team.players.remove(player)
-        User.objects.filter(pk=player_pk).update(is_team=False)
-        messages.success(request, f'{player.username} został usunięty z drużyny {team.name}')
-        return redirect('tournament_app:team_details', pk=team.pk)
+        if request.user.id == team.leader.id:
+            messages.error(request, 'Nie możesz usunąć lidera z drużyny!')
+            return redirect('tournament_app:team_details', pk=team.pk)
+        else:
+            team.players.remove(player)
+            User.objects.filter(pk=player_pk).update(is_team=False)
+            messages.success(request, f'{player.username} został usunięty z drużyny {team.name}')
+            return redirect('tournament_app:team_details', pk=team.pk)
     else:
         return render(request, 'tournament_app/remove_player.html', context={'team': team, 'player': player})
 
@@ -159,14 +170,20 @@ def remove_player(request, team_pk, player_pk):
 def leave_team(request, pk):
     team = get_object_or_404(Team, pk=pk)
     user = request.user
-    if user.is_team and user in team.players.all():
-        team.players.remove(user)
-        User.objects.filter(pk=user.id).update(is_team=False)
-        messages.success(request, 'Opuściłeś drużynę')
-        return render('tournament_app:index')
+    if request.user.id == team.leader.id:
+        messages.error(request, 'Nie możesz wyjść, jesteś liderem tej drużyny!')
+        return redirect('tournament_app:index')
+    if request.method == 'POST':
+        if user.is_team and user in team.players.all():
+            team.players.remove(user)
+            User.objects.filter(pk=user.id).update(is_team=False)
+            messages.success(request, 'Opuściłeś drużynę')
+            return redirect('tournament_app:index')
+        else:
+            messages.error(request, 'Nie jesteś w tej drużynie!')
+            return redirect('tournament_app:index')
     else:
-        messages.error(request, 'Nie jesteś w żadnej drużynie')
-    return render(request, 'tournament_app/leave_team.html', context={'team': team})
+        return render(request, 'tournament_app/leave_team.html', context={'team': team})
 
 
 
@@ -180,8 +197,10 @@ def update_user(request, pk):
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Pomyślnie zaktualizowałeś Swoje dane!')
                 return redirect('tournament_app:index')
             else:
+                messages.error(request, 'Coś poszło nie tak!')
                 return redirect('tournament_app:index')
         else:
             form = UserForm(instance=user)
@@ -198,22 +217,21 @@ def invite_user(request,pk):
         if request.method == 'POST':
             if form.is_valid():
                 invitation = form.save(commit=False)
-                messages.success(request, 'Zaproszenie zostało wysłane')
                 invitation.team = team
                 invitation.sender = request.user
                 try:
                     recipient = User.objects.get(username=form.cleaned_data['recipient'])
                 except User.DoesNotExist:                    
-                    messages.error(request, 'Podany użytkownik nie istnieje')
+                    messages.error(request, 'Podany użytkownik nie istnieje!')
                     return redirect('tournament_app:invite_user', pk=pk)
                 if recipient in team.players.all():
-                    messages.error(request, 'Użytkownik jest już w drużynie')
+                    messages.error(request, 'Użytkownik jest już w drużynie!')
                     return redirect('tournament_app:invite_user', pk=pk)
                 if team.players.count() >= 5:
-                    messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników')
+                    messages.error(request, 'Drużyna już osiągnęła maksymalny limit zawodników!')
                     return redirect('tournament_app:invite_user', pk=pk)
                 if Invitation.objects.filter(recipient=recipient, team=team).exists():
-                    messages.error(request, 'Użytkownik ma już zaproszenie od tej drużyny')
+                    messages.error(request, 'Użytkownik ma już zaproszenie od tej drużyny!')
                     return redirect('tournament_app:invite_user', pk=pk)
                 invitation.recipient = recipient
                 invitation.save()
@@ -236,9 +254,7 @@ def get_invitation(request, pk):
         if request.method == 'POST':
             if form.is_valid():
                 accept = form.cleaned_data['accept']
-                print(accept)
-                if accept == True:
-                    print(accept)
+                if accept == 'Tak':
                     invitation.accept()
                     invitation.team.players.add(request.user)
                     User.objects.filter(pk=request.user.id).update(is_team=True)

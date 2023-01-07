@@ -2,6 +2,16 @@
 {% load static %}
 {% block content %}
 
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
+
 <div class="container mt-5">
   <h2>Zaproś zawodnika do drużyny</h2>
   <form method="post" enctype="multipart/form-data">

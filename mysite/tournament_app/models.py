@@ -41,7 +41,8 @@ class Tournament(models.Model):
 class Invitation(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient', to_field = 'username', verbose_name='Odbiorca')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name= 'recipient', to_field = 'username', verbose_name='Odbiorca')
+    title = models.CharField(max_length=150, verbose_name='Tytuł')
     message = models.TextField(verbose_name='Wiadomość')
     accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,4 +1,4 @@
-{% include 'tournament_app/base.html' %}
+{% include 'tournament_app/navbar.html' %}
 
     {% load static %}
 
@@ -33,7 +33,7 @@
             <p> Zaproszenia: </p>
             {% for invitation in user.recipient.all %}
             <ul>
-                <li><a href='{% url 'tournament_app:get_invitation' pk=invitation.pk %}'>{{ invitation.message }}</a></li>
+                <li><a href='{% url 'tournament_app:get_invitation' pk=invitation.pk %}'>{{ invitation.title }}</a></li>
             </ul>
             {% endfor %}
         {% endif %}
@@ -42,5 +42,5 @@
     {% endif %}
     
     {% endblock %}
-</body>
-</html>
+
+    <p>Copyrights Jakub Ziomek 2022</p>

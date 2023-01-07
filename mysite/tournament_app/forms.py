@@ -35,15 +35,15 @@ class UserForm(ModelForm):
         fields = ("logo", "info")
 
 class InvitationForm(ModelForm):
-    recipient = forms.ModelChoiceField(queryset=User.objects.filter(is_team=False))
+    recipient = forms.ModelChoiceField(queryset=User.objects.filter(is_team=False), label='Użytkownik')
     
     class Meta:
         model = Invitation
-        fields =  ("recipient", "message")
+        fields =  ("recipient", "title", "message")
 
 
 class AcceptInvitationForm(forms.Form):
-    accept = forms.ChoiceField(label='Czy zaakceptować zaproszenie?', choices=[(True, 'Tak'), (False, 'Nie')], widget=forms.RadioSelect)
+    accept = forms.ChoiceField(label='Czy zaakceptować zaproszenie?', choices=[('Tak', 'Tak'), ('Nie', 'Nie')], widget=forms.RadioSelect)
 
 
     
