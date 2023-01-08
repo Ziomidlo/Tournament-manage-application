@@ -25,7 +25,7 @@
 {% else %}
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}
-<h3>Lider drużyny: <a href='{{ team.leader.get_absolute_url }}'>{{ team.leader.username }}</a></h3>
+<h3>Lider drużyny: <a href='{{ team.leader.get_absolute_url }}' >{{ team.leader.username }}</a></h3>
 <h3>Ilość zawodników: {{ team.players.count }}/5</h3>
 <h3>Zawodnicy: </h3>
 
@@ -36,19 +36,19 @@
         <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></br></br>
     {% endif %}
      {% if team.leader.id == user.id and player != team.leader %}
-        <a href='{% url 'tournament_app:remove_player' team.pk player.pk %}'>Usuń</a></br>
+        <a href='{% url 'tournament_app:remove_player' team.pk player.pk %}' class="btn btn-danger">Usuń</a></br>
     {% endif %}
 {% endfor %}
 
 {% if team.leader.id == request.user.id %}
-    <a href='{% url 'tournament_app:update_team' team.id %}'>Edytuj Drużynę</a>
-    <a href='{% url 'tournament_app:delete_team' team.id %}'>Usuń Drużynę</a>
-    <a href='{% url 'tournament_app:invite_user' pk=team.pk %}'>Dodaj Zawodnika</a>
+    <a href='{% url 'tournament_app:update_team' team.id %}' class="btn btn-dark">Edytuj Drużynę</a>
+    <a href='{% url 'tournament_app:delete_team' team.id %}' class="btn btn-danger">Usuń Drużynę</a>
+    <a href='{% url 'tournament_app:invite_user' pk=team.pk %}' class="btn btn-success">Dodaj Zawodnika</a>
 {% endif %}
 
 {% if user in team.players.all and team.leader.id != request.user.id %}
     <a href='{% url 'tournament_app:leave_team' pk=team.pk %}'>Opuść drużynę</a>
 {% endif %}
-<a href='{% url 'tournament_app:team_list' %}'>Powrót</a>
+<a href='{% url 'tournament_app:team_list' %}' class="btn btn-dark">Powrót</a>
 
 {% endblock %}

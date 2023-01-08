@@ -22,9 +22,9 @@
             {{ field }}
         {% endif %}
         {% endfor %}
-        <input type='submit' value='Stwórz' class='btn btn-secondary'>
+        <input type='submit' value='Stwórz' class="btn btn-success"
         <input type='button' value='Anuluj dodawanie pliku' class='btn btn-danger' onclick='document.getElementById("id_logo").value = ""'>
-        <a href='{% url 'tournament_app:index'}'>Powrót</a>
+        <a href='{% url 'tournament_app:index'} ' class="btn btn-dark">Powrót</a>
     </form>
 </center>
 

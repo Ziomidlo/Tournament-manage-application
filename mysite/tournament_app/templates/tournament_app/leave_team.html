@@ -1,5 +1,7 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static%}
+
 {% block content %}
 
 {% if messages %}
@@ -15,7 +17,7 @@
 <form method='POST' action='{% url 'tournament_app:leave_team' pk=team.pk %}'>
     {% csrf_token %}
     <button type='submit' class='btn btn-danger'>Opuść drużynę</button>
-    <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class='btn btn-secondary'>Anuluj</a>
+    <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class="btn btn-dark">Anuluj</a>
 </form>
 
 {% endblock %}

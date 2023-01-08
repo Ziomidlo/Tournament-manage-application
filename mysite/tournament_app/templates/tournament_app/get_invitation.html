@@ -1,6 +1,10 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static%}
+
+
 {% block content %}
+
 
 <div class="container mt-5">
     <h2>Odbierz zaproszenie</h2>
@@ -13,7 +17,7 @@
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" class="btn btn-success" value="Prześlij">
-      <a href='{% url 'tournament_app:index' %}'>Powrót</a>
+      <a href='{% url 'tournament_app:index' %}' class="btn btn-dark">Powrót</a>
     </form>
   </div>
     {% endif %}

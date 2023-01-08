@@ -19,9 +19,9 @@
             {{ field }}
         {% endif %}
         {% endfor %}
-        <input type='submit' value='Zaktualizuj' class='btn btn-secondary'>
+        <input type='submit' value='Zaktualizuj' class='btn btn-success'>
         <input type='button' value='Anuluj dodawanie pliku' class='btn btn-danger' onclick='document.getElementById("id_logo").value = ""'>
-        <a href='{% url 'tournament_app:team_details' pk=team.pk %}'>Powrót</a>
+        <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class="btn btn-dark">Powrót</a>
     </form>
 </center
 

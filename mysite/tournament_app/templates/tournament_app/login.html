@@ -1,5 +1,7 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static%}
+
 {% block content %}
 
 {% load crispy_forms_tags %}
@@ -20,7 +22,7 @@
     <form method="POST">
         {% csrf_token %}
         {{ login_form|crispy }}
-        <button class='btn btn-primary' type='submit'>Zaloguj</button>
+        <button class="btn btn-dark" type='submit'>Zaloguj</button>
     </form>
     <p class='text-center'>Nie posiadasz konta? <a href='/register'>Stwórz nowe konto!</a></p>
 

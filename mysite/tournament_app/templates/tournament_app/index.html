@@ -29,7 +29,7 @@
         {% endif %}
             <p>Informacje o użytkowniku: {{user.info}}</p>
         {% if 'logged_in_user' in request.session %}
-            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}'>Zaktualizuj </a>Swoje dane</p>
+            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}' >Zaktualizuj </a>Swoje dane</p>
             <p> Zaproszenia: </p>
             {% for invitation in user.recipient.all %}
             <ul>

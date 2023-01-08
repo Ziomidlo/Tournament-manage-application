@@ -18,6 +18,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" class="btn btn-success" value="Wyślij zaproszenie">
+    <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class="btn btn-dark">Powrót</a> 
   </form>
 </div>
 
