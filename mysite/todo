@@ -2,3 +2,5 @@ don't forget about notifications model in future and tournament history.
 let's try to do a tournament things.
 change password function
 when admin goes form admin panel automaticaly logout
+tournament model 2 to n when creating.
+random list of teams during the tournament instead of bracket.

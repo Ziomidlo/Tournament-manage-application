@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 
-from .models import Tournament, User, Team, Invitation
+from .models import Tournament, User, Team, Invitation, Match
 
 
 def navbar(request):
@@ -30,11 +30,9 @@ def user_details(request, pk):
     user = get_object_or_404(User, pk=pk)
     return render(request, 'tournament_app/user.html', context={'user': user})
 
-
-@login_required(login_url='/login', redirect_field_name='torunament_list')
 def tournament_list(request):
-    latest_tournament_list = Tournament.objects.order_by('id')
-    return render(request, 'tournament_app/tournaments.html', context = {'latest_tournament_list' : latest_tournament_list})
+    tournaments = Tournament.objects.order_by('id')
+    return render(request, 'tournament_app/tournaments.html', context = {'tournaments' : tournaments})
 
 def tournament_details(request, pk):
     tournament_details = get_object_or_404(Tournament, pk = pk)
@@ -155,14 +153,10 @@ def remove_player(request, team_pk, player_pk):
         messages.error(request, 'Nie masz do tego dostępu!')
         return render(request, 'tournament_app/index.html')
     if request.method == 'POST':
-        if request.user.id == team.leader.id:
-            messages.error(request, 'Nie możesz usunąć lidera z drużyny!')
-            return redirect('tournament_app:team_details', pk=team.pk)
-        else:
-            team.players.remove(player)
-            User.objects.filter(pk=player_pk).update(is_team=False)
-            messages.success(request, f'{player.username} został usunięty z drużyny {team.name}')
-            return redirect('tournament_app:team_details', pk=team.pk)
+        team.players.remove(player)
+        User.objects.filter(pk=player_pk).update(is_team=False)
+        messages.success(request, f'{player.username} został usunięty z drużyny {team.name}')
+        return redirect('tournament_app:team_details', pk=team.pk)
     else:
         return render(request, 'tournament_app/remove_player.html', context={'team': team, 'player': player})
 
@@ -280,4 +274,25 @@ def search(request):
         users = User.objects.none()
         tournaments = Tournament.objects.none()
     return render(request, 'tournament_app/search.html', {'teams': teams, 'users': users, 'tournaments': tournaments, 'query':query})
+
+@login_required(login_url='/login')
+def join_tournament(request, tournament_pk, team_pk):
+    tournament = get_object_or_404(Tournament, pk=tournament_pk)
+    team = get_object_or_404(Team, pk=team_pk)
+    if request.user.id != team.leader.id:
+        messages.error(request, 'Tylko lider drużyny może dołączyć do turnieju!')
+        return redirect('tournament_app:tournament_details', pk=tournament_pk)
+    else:
+        if team in tournament.team.all():
+            messages.error(request, 'Twoja drużyna już bierze udział w tym turnieju!')
+            return redirect('tournament_app:tournament_details', pk=tournament_pk)
+        elif tournament.team.count() >= tournament.number_of_teams:
+            messages.error(request, 'Turniej jest już pełny!')
+            return redirect('tournament_app:tournament_details', pk=tournament_pk)
+        else:
+            tournament.team.add(team)
+            Team.objects.filter(pk=team_pk).update(is_tournament=True)
+            tournament.save()
+            messages.success(request, 'Twoja drużyna dołączyła do turnieju!')
+            return redirect('tournament_app:tournament_details', pk=tournament_pk)
 # Create your views here.

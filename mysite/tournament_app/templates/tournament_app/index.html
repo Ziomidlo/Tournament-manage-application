@@ -1,6 +1,7 @@
 {% include 'tournament_app/navbar.html' %}
 
     {% load static %}
+    <link rel='stylesheet' href='{% static 'style.css' %}'>
 
     {% block content %}
 
@@ -12,13 +13,14 @@
 {% endfor %}
 {% endif %} 
 
+    <div class='main page'>
     {% if user.is_authenticated %}
         {% if user.logo %}
             <img src='{{user.logo.url}}'style='width:200px; length=200px'>
         {% else %}
             <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
         {% endif %}
-            <p>Jesteś zalogowany jako: {{user.username}}
+            <p>Nick: {{user.username}}
             <p>Email: {{user.email}}
         {%if user.is_team == False %}
             <p>Drużyna: W tym momencie nie posiadasz żadnej drużyny: <a href='{% url 'tournament_app:create_team' %}'>Stwórz</a> ją właśnie teraz!</p>
@@ -40,7 +42,9 @@
     {% else %}
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>
     {% endif %}
+        </div>
     
     {% endblock %}
-
-    <p>Copyrights Jakub Ziomek 2022</p>
+    <div class='footer'>
+    <p style="text-align: center;margin-top: auto;margin-block: ;">Copyrights Jakub Ziomek 2022</p>
+    </div>

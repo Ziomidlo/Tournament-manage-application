@@ -2,6 +2,14 @@
 
 {% load static %}
 
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
 {% block content %}
     {%if tournament.date %}
         {{tournament.date}}
@@ -11,7 +19,12 @@
     {% else %}
         <img src= '{% static 'tournament_app/tournament.png' %}' style='width:350px; length=350px'>
     {% endif %}
-    <p>{{tournament.name}}</p>
-    <p>{{tournament.description}}</p>
-    <p>{{tournament.number_of_teams}}</p>
+    <h2>Nazwa Turnieju: {{tournament.name}}</h2>
+    <h3>Opis: {{tournament.description}}</h3>
+    <ul>
+        <h4>Drużyny: </h4>
+        {% for team in tournament.team.all %}
+           <li><a href='{{ team.get_absolute_url }}'>{{team.name}}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %} 

@@ -1,5 +1,6 @@
 {% extends 'tournament_app/base.html' %}
 
+
 {% load static %}
 
 {% block content %}
@@ -12,7 +13,6 @@
 {% endfor %}
 {% endif %} 
 
-
 <h2>{{ team.name }}</h2>
 {% if team.logo %}
     <img src='{{ team.logo.url }}' style = 'width:200px; length=200px;'>
@@ -21,7 +21,7 @@
 {% endif %}
 {{ team.description }}
 {% if team.is_tournament %}
-    {{ team.is_tournament }}
+    Drużyna uczesniczy obecnie w turnieju: {{ team.is_tournament }}
 {% else %}
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}

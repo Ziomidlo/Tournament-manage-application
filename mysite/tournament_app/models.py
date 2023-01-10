@@ -26,17 +26,27 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+
 class Tournament(models.Model):
     logo = models.ImageField(null=True, blank=True, upload_to="tournament/")
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
     number_of_teams = models.IntegerField()
     team = models.ManyToManyField(Team, related_name='tournaments', null=True, blank=True)
-    mvp = models.BooleanField(default=False, blank=True)
     date = models.DateTimeField(auto_now=True)
+
+class Match(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
+    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
+    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
+    home_team_score = models.IntegerField()
+    away_team_score = models.IntegerField()
+    match_date = models.DateTimeField()
+    MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='MVP_matches', null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('tournament_app:tournament_details', kwargs={'pk': self.pk})
+
 
 class Invitation(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
