@@ -283,8 +283,11 @@ def join_tournament(request, tournament_pk, team_pk):
         messages.error(request, 'Tylko lider drużyny może dołączyć do turnieju!')
         return redirect('tournament_app:tournament_details', pk=tournament_pk)
     else:
-        if team in tournament.team.all():
+        if team in tournament.team.all() and team.is_tournament:
             messages.error(request, 'Twoja drużyna już bierze udział w tym turnieju!')
+            return redirect('tournament_app:tournament_details', pk=tournament_pk)
+        elif tournament.is_started:
+            messages.error(request, 'Nie można dołączyć do trwającego turnieju!')
             return redirect('tournament_app:tournament_details', pk=tournament_pk)
         elif tournament.team.count() >= tournament.number_of_teams:
             messages.error(request, 'Turniej jest już pełny!')
@@ -295,4 +298,28 @@ def join_tournament(request, tournament_pk, team_pk):
             tournament.save()
             messages.success(request, 'Twoja drużyna dołączyła do turnieju!')
             return redirect('tournament_app:tournament_details', pk=tournament_pk)
+
+@login_required(login_url='/login')
+def leave_tournament(request, tournament_pk, team_pk):
+    tournament = get_object_or_404(Tournament, pk=tournament_pk)
+    team = get_object_or_404(Team, pk=team_pk)
+    if request.user.id != team.leader.id:
+        messages.error(request, 'Tylko lider drużyny może opuścić turniej!')
+        return redirect('tournament_app:tournament_details', pk=tournament_pk)
+    else:
+        if tournament.is_started == False:
+            messages.error(request, 'Nie można opuścić trwającego turnieju!')
+            return redirect('tournament_app:tournament_details', pk=tournament_pk)
+        else:
+            if request.method == 'POST':    
+                tournament.team.delete(team)
+                Team.objects.filter(pk=team.pk).update(is_tournament=False)
+                tournament.save()
+                messages.success(request, 'Twoja drużyna pomyślnie opuściła turniej!')
+                return redirect('tournament_app:team_details', pk=team_pk)
+            else:
+                return render(request,'tournament_app/leave_tournament.html', context= { 'tournament': tournament })
+
+
+
 # Create your views here.

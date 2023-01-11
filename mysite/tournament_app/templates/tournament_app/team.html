@@ -21,7 +21,9 @@
 {% endif %}
 {{ team.description }}
 {% if team.is_tournament %}
-    Drużyna uczesniczy obecnie w turnieju: {{ team.is_tournament }}
+    {% for tournament in team.tournaments.all %}
+        <p>Drużyna uczestniczy obecnie w turnieju: <a href='{% url 'tournament_app:tournament_details' pk=tournament.pk %}'>{{ tournament.name }}</a></p>
+    {% endfor %}
 {% else %}
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}

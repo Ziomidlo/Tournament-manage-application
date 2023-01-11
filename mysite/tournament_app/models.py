@@ -33,6 +33,8 @@ class Tournament(models.Model):
     description = models.TextField(max_length=2000)
     number_of_teams = models.IntegerField()
     team = models.ManyToManyField(Team, related_name='tournaments', null=True, blank=True)
+    is_started = models.BooleanField(default=False, blank=True)
+    is_finished = models.BooleanField(default=False, blank=True)
     date = models.DateTimeField(auto_now=True)
 
 class Match(models.Model):

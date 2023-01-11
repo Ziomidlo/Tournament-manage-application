@@ -27,4 +27,5 @@ urlpatterns = [
     path('remove_player/<int:team_pk>/<int:player_pk>/', views.remove_player, name='remove_player'),
     path('leave_team/<int:pk>/', views.leave_team, name='leave_team'),
     path('join_tournament/<int:tournament_pk>/<int:team_pk>/', views.join_tournament, name='join_tournament'),
+    path('leave_tournament/<int:tournament_pk>/<int:team_pk>/', views.leave_tournament, name='leave_tournament'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
