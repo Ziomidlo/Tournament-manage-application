@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'b2xcnt2htsoqwm9rlu1t',
-        'USER': 'ui5ig8xrnlfcd5nzaepk',
-        'PASSWORD': 'oxoVANHAH1HEq1YYrXOt',
-        'HOST': 'b2xcnt2htsoqwm9rlu1t-postgresql.services.clever-cloud.com',
+        'NAME': 'neondb',
+        'USER': 'kziomek33',
+        'PASSWORD': 'YM0iUWtjBNR3',
+        'HOST': 'ep-restless-sunset-039274.eu-central-1.aws.neon.tech',
         'PORT': '5432',
     }
 }

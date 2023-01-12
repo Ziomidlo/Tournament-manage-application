@@ -2,9 +2,18 @@
 
 {% block content %}
 
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
+
 <h2>Opuszczenie Turnieju </h2>
 <p> Czy na pewno chcesz opuścić turniej {{ tournament.name }}?</p>
-<form method='POST' action='{% url 'tournament_app:leave_tournament' tournament_pk=tournament.pk team_pk = request.team.pk %}'>
+<form method='POST' action='{% url 'tournament_app:leave_tournament' tournament_pk=tournament.pk team_pk=team.pk %}'>
     {% csrf_token %}
     <button type='submit' class='btn btn-danger'>Opuść Turniej</button>
     <a href='{% url 'tournament_app:tournament_details' pk=tournament.pk %}' class="btn btn-dark">Anuluj</a>

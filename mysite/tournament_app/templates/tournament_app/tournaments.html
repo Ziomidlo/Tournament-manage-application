@@ -7,7 +7,7 @@
                 <li><a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a><p>Liczba drużyn: {{ tournament.team.count }}/{{tournament.number_of_teams}}</p></li>
             {% for team in user.teams.all %}
                 {%if tournament.team.count < tournament.number_of_teams and request.user.is_authenticated and request.user.id == team.leader.id and team.is_tournament == False %}
-                    <a href='{% url 'tournament_app:join_tournament' tournament_pk=tournament.pk team_pk=team.pk %}'>Dołącz</a>
+                    <a href='{% url 'tournament_app:join_tournament' tournament_pk=tournament.pk team_pk=team.pk %}' class = 'btn btn-dark'>Dołącz</a>
                 {% endif %}
             {% endfor %}
             {% endfor %}

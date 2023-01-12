@@ -27,9 +27,11 @@
            <li><a href='{{ team.get_absolute_url }}'>{{team.name}}</a></li>
         {% endfor %}
     </ul>
+    {%for team in tournament.team.all %}
+        {%if request.user.id  == team.leader.id and tournament.is_started == False %}
+        <a href='/leave_tournament/{{tournament.pk}}/{{team.pk}}'>Opuść Turniej</a>
+        {% endif %}
+    {% endfor %}
 
-    {% if user in team.players.all and team.leader.id == request.user.id and team.is_tournament %}
-        <a href='{% url 'tournament_app:leave_tournament' tournament_pk = tournament.pk team_pk = team.pk }'>Opuść Turniej</a>
-    {% endif %}
 
 {% endblock %} 
