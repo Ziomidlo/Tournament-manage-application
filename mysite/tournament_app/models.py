@@ -35,15 +35,16 @@ class Tournament(models.Model):
     team = models.ManyToManyField(Team, related_name='tournaments', null=True, blank=True)
     is_started = models.BooleanField(default=False, blank=True)
     is_finished = models.BooleanField(default=False, blank=True)
+    is_drawed = models.BooleanField(default=False)
+    round_number = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
 
 class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
-    home_team_score = models.IntegerField()
-    away_team_score = models.IntegerField()
-    match_date = models.DateTimeField()
+    home_team_score = models.IntegerField(default=0)
+    away_team_score = models.IntegerField(default=0)
     MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='MVP_matches', null=True, blank=True)
 
     def get_absolute_url(self):

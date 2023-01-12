@@ -2,15 +2,16 @@
 
 {% load static %}
 
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }}">
-{{ message }}</br></br>
-</div>
-{% endfor %}
-{% endif %} 
 
 {% block content %}
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+    {{ message }}</br></br>
+    </div>
+    {% endfor %}
+    {% endif %} 
     {%if tournament.date %}
         {{tournament.date}}
     {% endif %} 
@@ -27,11 +28,36 @@
            <li><a href='{{ team.get_absolute_url }}'>{{team.name}}</a></li>
         {% endfor %}
     </ul>
+
+    {% if tournament.is_started %}
+        <h2>Runda: {{tournament.round_number}}</h2>
+        <h3>Mecze: </h3>
+        {% for match in tournament.matches.all %}
+            <div>
+                <p> {{ match.home_team.name }} {{match.home_team_score}} vs {{ match.away_team_score }} {{match.away_team.name}}
+            </div>
+        {% endfor %}    
+    {% endif %}
+
     {%for team in tournament.team.all %}
         {%if request.user.id  == team.leader.id and tournament.is_started == False %}
-        <a href='/leave_tournament/{{tournament.pk}}/{{team.pk}}'>Opuść Turniej</a>
+        <a href='/leave_tournament/{{tournament.pk}}/{{team.pk}}' class='btn btn-dark'>Opuść Turniej</a>
         {% endif %}
     {% endfor %}
+    {% if tournament.is_started == False %}
+        {% if user.is_superuser and tournament.team.count == tournament.number_of_teams %}
+            <a href='{% url 'tournament_app:start_tournament' pk=tournament.pk %}' class='btn btn-dark'>Rozpocznij Turniej</a>
+        {% endif %}
+    {% else %}
+        {% if user.is_superuser and tournament.team.count == tournament.number_of_teams and tournament.is_drawed == False %}
+            <a href='{% url 'tournament_app:randomize_teams' pk=tournament.pk %}' class='btn btn-dark'>Losuj Drużyny</a> 
+        {% endif %} 
+        {% if user.is_superuser and tournament.team.count == tournament.number_of_teams and tournament.is_drawed == True %}
+            <a href= '{% url 'tournament_app:finish_round' pk=tournament.pk %}' class='btn btn-dark'>Zakończ rundę</a>
+        {% endif %}
+    {% endif %}
+
+
 
 
 {% endblock %} 

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from random import shuffle
 
 from .models import Tournament, User, Team, Invitation, Match
 
@@ -323,6 +324,77 @@ def leave_tournament(request, tournament_pk, team_pk):
         else:
             return render(request,'tournament_app/leave_tournament.html', context= { 'tournament': tournament, 'team': team})
 
+@login_required(login_url='/login')
+def start_tournament(request, pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
+    user = request.user
+    if user.is_superuser == False:
+        messages.error(request, 'Nie masz do tego dostępu!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    else:
+        if request.method == 'POST':
+            if tournament.is_started:
+                messages.error(request, 'Turniej już wystartował!')
+                return redirect('tournament_app:tournament_details', pk=pk)
+            elif tournament.team.count() != tournament.number_of_teams:
+                messages.error(request, 'Niewystarczająca ilość drużyn!')
+                return redirect('tournament_app:tournament_details', pk=pk)
+            else:
+                Tournament.objects.filter(pk=pk).update(is_started=True)
+                messages.success(request, 'Turniej pomyślnie wystartował!')
+                return redirect('tournament_app:tournament_details', pk=pk)
+        else:
+            return render(request,'tournament_app/start_tournament.html', context= { 'tournament': tournament})
 
+
+
+
+@login_required(login_url='/login')
+def randomize_teams(request, pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
+    teams = list(tournament.team.all())
+    user = request.user
+    if user.is_superuser == False:
+        messages.error(request, 'Nie masz do tego dostępu!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    if tournament.is_started == False:
+        messages.error(request, 'Turniej się jeszcze nie rozpoczął!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    if len(teams) < tournament.number_of_teams:
+        messages.error(request, 'Brak wystarczającej liczby drużyn')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    if tournament.is_drawed:
+        messages.error(request, 'Drużyny już zostały wylosowane!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    shuffle(teams)
+    for i in range(0, len(teams), 2):
+        home_team = teams[i]
+        away_team = teams[i+1]
+        match = Match(tournament=tournament, home_team=home_team, away_team=away_team)
+        match.save()
+    tournament.save()
+    Tournament.objects.filter(pk=pk).update(is_drawed=True)
+    messages.success(request, 'Drużyny zostały losowo przydzielone')
+    return redirect('tournament_app:tournament_details', pk=pk)
+
+@login_required(login_url='/login')
+def finish_round(request, pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
+    user = request.user
+    if user.is_superuser == False:
+        messages.error(request, 'Nie masz do tego dostępu!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    elif tournament.is_drawed == False:
+        messages.error(request, 'Nie rozlosowano drużyn!')
+        return redirect('tournament_app:tournament_details', pk=pk)
+    else:
+        tournament.matches.all().delete()
+        tournament.round_number += 1
+        tournament.save()
+        Tournament.objects.filter(pk=pk).update(is_drawed=False)
+        messages.success(request, 'Pomyślnie zakończono rundę.')
+        return redirect('tournament_app:tournament_details', pk=pk)
+
+    
 
 # Create your views here.
