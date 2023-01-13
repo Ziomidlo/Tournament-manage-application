@@ -43,8 +43,8 @@ class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
-    home_team_score = models.IntegerField(default=0)
-    away_team_score = models.IntegerField(default=0)
+    winner = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='winner')
+    is_finished = models.BooleanField(default=False)
     MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='MVP_matches', null=True, blank=True)
 
     def get_absolute_url(self):

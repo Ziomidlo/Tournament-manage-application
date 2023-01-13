@@ -34,7 +34,7 @@
         <h3>Mecze: </h3>
         {% for match in tournament.matches.all %}
             <div>
-                <p> {{ match.home_team.name }} {{match.home_team_score}} vs {{ match.away_team_score }} {{match.away_team.name}}
+                <p> {{ match.home_team.name }} vs {{match.away_team.name}}</p> <a href='{% url 'tournament_app:match_details' tournament_pk=tournament.pk match_pk=match.pk %}'>Szczegóły</a>
             </div>
         {% endfor %}    
     {% endif %}
@@ -56,6 +56,8 @@
             <a href= '{% url 'tournament_app:finish_round' pk=tournament.pk %}' class='btn btn-dark'>Zakończ rundę</a>
         {% endif %}
     {% endif %}
+
+    <a href='{% url 'tournament_app:tournament_list' %}' class='btn btn-dark'>Powrót</a>
 
 
 

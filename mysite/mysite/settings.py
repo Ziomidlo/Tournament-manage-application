@@ -85,8 +85,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'neondb',
         'USER': 'kziomek33',
-        'PASSWORD': 'YM0iUWtjBNR3',
-        'HOST': 'ep-restless-sunset-039274.eu-central-1.aws.neon.tech',
+        'PASSWORD': 'BhyNPuDpE31t',
+        'HOST': 'ep-lively-flower-084593.eu-central-1.aws.neon.tech',
         'PORT': '5432',
     }
 }

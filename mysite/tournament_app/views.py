@@ -11,15 +11,6 @@ from random import shuffle
 from .models import Tournament, User, Team, Invitation, Match
 
 
-def navbar(request):
-    logged_in_user = request.session.get('logged_in_user', None)
-    if logged_in_user:
-        user = User.objects.get(id=logged_in_user)
-        context = {'user': user}
-    else:
-        user = None
-    return render(request, 'tournament_app/navbar.html', context=context)
-
 def index(request):
     return render(request, 'tournament_app/index.html')
 
@@ -46,6 +37,11 @@ def team_list(request):
 def team_details(request, pk):
     team_details = get_object_or_404(Team, pk = pk)
     return render(request, 'tournament_app/team.html', context = {'team': team_details})
+
+def match_details(request, tournament_pk, match_pk):
+    tournament = get_object_or_404(Tournament, pk=tournament_pk)
+    match = get_object_or_404(Match, pk=match_pk)
+    return render(request, 'tournament_app/match.html', context={'tournament': tournament, 'match': match})
 
 def register_request(request):
     if request.user.is_authenticated:
@@ -395,6 +391,56 @@ def finish_round(request, pk):
         messages.success(request, 'Pomyślnie zakończono rundę.')
         return redirect('tournament_app:tournament_details', pk=pk)
 
+
+@login_required(login_url='/login')
+def save_match(request, tournament_pk, match_pk):
+    tournament = get_object_or_404(Tournament, pk=tournament_pk)
+    match = get_object_or_404(Match, pk=match_pk)
+    user = request.user
+    if user.is_superuser == False:
+        messages.error(request, 'Nie masz do tego dostępu!')
+        return redirect('tournament_app:tournament_details', pk=tournament_pk)
+    elif match.is_finished == True:
+        messages.error(request, 'Mecz się już zakończył!')
+        return redirect('tournament_app:tournament_details', pk=tournament_pk)
+    else:
+        if request.method == 'POST':
+            home_team_score = request.POST.get("home_team_score")
+            away_team_score = request.POST.get("away_team_score") 
+            if home_team_score == None or away_team_score == None:
+                messages.error(request, 'Wprowadź wynik!')
+                return redirect('tournament_app:match_details', tournament_pk=tournament_pk, match_pk=match_pk)
+            elif home_team_score > 3 or away_team_score > 3 or home_team_score < 0 or away_team_score < 0:
+                messages.error(request, 'Wynik musi być liczbą od 0-3')
+                return redirect('tournament_app:match_details', tournament_pk=tournament_pk, match_pk=match_pk)
+            elif home_team_score == away_team_score:
+                messages.error(request, 'Wynik nie może zakończyć się remisem!')
+                return redirect('tournament_app:match_details', tournament_pk=tournament_pk, match_pk=match_pk)
+            else:
+                match.home_team_score = home_team_score
+                match.away_team_score = away_team_score
+                match.save()
+                if int(home_team_score) == 3 and  int(away_team_score) < 3:
+                    match.tournament.team.remove(match.away_team)
+                    match.away_team.is_tournament = False
+                    match.is_finished == True
+                    match.away_team.save()
+                    messages.success(request, 'Pomyślnie zapisano wynik!')
+                    return redirect('tournament_app:tournament_details', pk=tournament_pk)
+                elif int(home_team_score) < 3 and int(away_team_score) == 3:
+                    home_team = Match.objects.filter(pk=match_pk).first().home_team
+                    tournament.team.remove(home_team)
+                    home_team.is_tournament = False
+                    match.is_finished == True
+                    home_team.save()
+                    tournament.save()
+                    messages.success(request, 'Pomyślnie zapisano wynik!')
+                    return redirect('tournament_app:tournament_details', pk=tournament_pk)
+                else:
+                    messages.error(request, 'Niepoprawnie zapisano wynik!')
+                    return redirect('tournament_app:match_details', tournament_pk=tournament_pk, match_pk=match_pk)
+        else:
+            return render(request,'tournament_app/match.html', context= { 'match': match, 'tournament': tournament })
     
 
 # Create your views here.
