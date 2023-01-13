@@ -20,8 +20,8 @@
         {% else %}
             <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
         {% endif %}
-            <p>Nick: {{user.username}}
-            <p>Email: {{user.email}}
+            <p>Nick: {{ user.username }}
+            <p>Email: {{ user.email }}
         {%if user.is_team == False %}
             <p>Drużyna: W tym momencie nie posiadasz żadnej drużyny: <a href='{% url 'tournament_app:create_team' %}'>Stwórz</a> ją właśnie teraz!</p>
         {%else %}
@@ -29,15 +29,24 @@
                     <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
                 {% endfor %}
         {% endif %}
-            <p>Informacje o użytkowniku: {{user.info}}</p>
+        <p>Ilość zdobytych MVP: {{ user.MVP }}
+            {% if user.info %}
+                <p>Informacje o użytkowniku: {{ user.info }}</p>
+            {% else %}
+                <p>Informacje o użytkowniku: Brak</p>
+            {% endif %}
         {% if 'logged_in_user' in request.session %}
             <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}' >Zaktualizuj </a>Swoje dane</p>
             <p> Zaproszenia: </p>
+            {% if invitation in user.recipient.all %}
             {% for invitation in user.recipient.all %}
             <ul>
                 <li><a href='{% url 'tournament_app:get_invitation' pk=invitation.pk %}'>{{ invitation.title }}</a></li>
             </ul>
             {% endfor %}
+            {% else %}
+                <p> W tym momencie nie masz żadnych zaproszeń do drużyny.</p>
+            {% endif %}
         {% endif %}
     {% else %}
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>

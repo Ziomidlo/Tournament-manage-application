@@ -1,0 +1,23 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
+<h3> Wybierz zwycięską drużynę oraz MVP meczu </h3>
+{% if match.is_finished == False and user.is_superuser %}
+<form method="post" action="{% url 'tournament_app:save_match' tournament_pk=tournament.pk match_pk=match.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input type="submit" value="Zakończ mecz" class='btn btn-dark'>
+</form>
+{% endif %}
+
+{% endblock %}

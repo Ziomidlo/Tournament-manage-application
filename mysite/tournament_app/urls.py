@@ -32,4 +32,5 @@ urlpatterns = [
     path('start_tournament/<int:pk>/', views.start_tournament, name='start_tournament'),
     path('randomize_teams/<int:pk>/', views.randomize_teams, name='randomize_teams'),
     path('finish_round/<int:pk>/', views.finish_round, name='finish_round'),
+    path('save_match/<int:tournament_pk>/<int:match_pk>/', views.save_match, name='save_match'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

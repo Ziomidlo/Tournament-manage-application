@@ -14,12 +14,16 @@
         {%if user.is_team == False %}
             <p>Drużyna: Brak drużyny</p>
         {%else %}
+        <p>Ilość zdobytych MVP: {{ user.MVP }}
             {% for team in user.teams.all %}
                 <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
-            {% endfor %}
-    
+            {% endfor %}   
         {% endif %}
-        <p>Informacje o użytkowniku: {{user.info}}</p>
+        {% if user.info %}
+            <p>Informacje o użytkowniku: {{ user.info }}</p>
+        {% else %}
+            <p>Informacje o użytkowniku: Brak</p>
+        {% endif %}
         <p><a href='{% url 'tournament_app:user_list' %}'>Powrót</a></p>
 
     {% endblock %}

@@ -2,10 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from invitations.utils import get_invitation_model
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 class User(AbstractUser):
     logo = models.ImageField(null=True, blank=True, upload_to="user/")
     info = models.TextField(max_length=2000, blank=True, null=True)
+    MVP = models.IntegerField(default=0)
     is_team = models.BooleanField(default=False, blank = True)
 
     def get_absolute_url(self):
@@ -27,23 +29,28 @@ class Team(models.Model):
         return self.name
 
 
+def power_of_two(value):
+    if (value & (value - 1) != 0):
+        raise ValidationError("Wartość musi być potęgą dwójki!")
+
+
 class Tournament(models.Model):
     logo = models.ImageField(null=True, blank=True, upload_to="tournament/")
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=2000)
-    number_of_teams = models.IntegerField()
+    number_of_teams = models.IntegerField(validators=[power_of_two])
     team = models.ManyToManyField(Team, related_name='tournaments', null=True, blank=True)
     is_started = models.BooleanField(default=False, blank=True)
     is_finished = models.BooleanField(default=False, blank=True)
-    is_drawed = models.BooleanField(default=False)
+    is_drawed = models.BooleanField(default=False, blank=True)
     round_number = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
 
+
 class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
-    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
-    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
-    winner = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='winner')
+    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches', null=True)
+    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches', null=True)
     is_finished = models.BooleanField(default=False)
     MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='MVP_matches', null=True, blank=True)
 
@@ -61,21 +68,16 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_valid(self):
-    # Sprawdź, czy zaproszenie nie zostało już zaakceptowane lub odrzucone
         if self.accepted:
             return False
-    # Sprawdź, czy drużyna nie osiągnęła już maksymalnego limitu zawodników
         if self.team.players.count() >= 5:
             return False
         return True
 
     
     def accept(self):
-        # Sprawdź, czy zaproszenie jest ważne (np. czy nie zostało już zaakceptowane lub odrzucone)
         if self.is_valid():
-            # Dodaj odbiorcę zaproszenia do drużyny
             self.team.players.add(self.recipient)
-            # Oznacz zaproszenie jako zaakceptowane
             self.accepted = True
             self.save()
 

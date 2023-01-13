@@ -31,9 +31,14 @@
 {% endfor %}
 
 {% if match.is_finished == False and user.is_superuser %}
-<form method="post" action="{% url 'tournament_app:match_details' tournament_pk=tournament.pk match_pk=match.pk %}">
+<form method="post" action="{% url 'tournament_app:save_match' tournament_pk=tournament.pk match_pk=match.pk %}">
     {% csrf_token %}
-    <br>
+    <label for="winner">Wybierz zwycięską drużynę:</label>
+    <select name="winner" id="winner">
+        <option value="{{ match.home_team.pk }}">{{ match.home_team.name }}</option>
+        <option value="{{ match.away_team.pk }}">{{ match.away_team.name }}</option>
+    </select>
+    <br><br>
     <input type="submit" value="Zakończ mecz" class='btn btn-dark'>
 </form>
 {% endif %}
