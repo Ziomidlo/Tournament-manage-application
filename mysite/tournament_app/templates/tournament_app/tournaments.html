@@ -11,7 +11,7 @@
                     <p>Liczba drużyn: {{ tournament.team.count }}/{{tournament.number_of_teams}}</p>
                 {% endif %}
             {% for team in user.teams.all %}
-                {%if tournament.team.count < tournament.number_of_teams and request.user.is_authenticated and request.user.id == team.leader.id and team.is_tournament == False %}
+                {%if tournament.team.count < tournament.number_of_teams and request.user.is_authenticated and request.user.id == team.leader.id and team.is_tournament == False and tournament.is_started == False %}
                     <a href='{% url 'tournament_app:join_tournament' tournament_pk=tournament.pk team_pk=team.pk %}' class = 'btn btn-dark'>Dołącz</a>
                 {% endif %}
             {% endfor %}

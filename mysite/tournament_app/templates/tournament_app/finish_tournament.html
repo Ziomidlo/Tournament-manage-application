@@ -1,0 +1,21 @@
+{% extends 'tournament_app/base.html' %}
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}</br></br>
+</div>
+{% endfor %}
+{% endif %} 
+
+<h2>Turniej wygrała drużyna {{tournament.team.all}}!</h2>
+
+<div class="container">
+    <form method="post" action='{% url 'tournament_app:finish_tournament' pk=tournament.pk%}' >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zakończ turniej" class='btn btn-dark'>
+    </form>
+</div>
+{% endblock %}

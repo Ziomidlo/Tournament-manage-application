@@ -52,6 +52,13 @@ class WinnerTeam(forms.Form):
         super(WinnerTeam, self).__init__(*args, **kwargs)
         self.fields['winner'].choices = [(home_team.pk, home_team.name), (away_team.pk, away_team.name)]
 
+class MVPForm(forms.Form):
+    MVP = forms.ModelChoiceField(queryset=None, label='Wybierz MVP')
+
+    def __init__(self, team, *args, **kwargs):
+        super(MVPForm, self).__init__(*args, **kwargs)
+        self.fields['MVP'].queryset = team.players.all()
+
 
 
     

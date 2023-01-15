@@ -20,12 +20,16 @@ class Team(models.Model):
     is_tournament = models.BooleanField(default=False, blank=True)
     players = models.ManyToManyField(User, related_name='teams', null=True, blank=True)
     leader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='led_teams', verbose_name='Lider')
+    won_tournaments = models.IntegerField(default=0)
     date = models.DateField(auto_now=True)
 
     def get_absolute_url(self):
         return reverse('tournament_app:team_details', kwargs={'pk': self.pk})
 
     def __str__(self):
+        return self.name
+
+    def __unicode__(self):
         return self.name
 
 
@@ -45,17 +49,16 @@ class Tournament(models.Model):
     is_drawed = models.BooleanField(default=False, blank=True)
     round_number = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
+    MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='tournament_MVP', null=True, blank=True)
 
+    def get_absolute_url(self):
+        return reverse('tournament_app:tournament_details', kwargs={'pk': self.pk})
 
 class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches', null=True)
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches', null=True)
     is_finished = models.BooleanField(default=False)
-    MVP = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='MVP_matches', null=True, blank=True)
-
-    def get_absolute_url(self):
-        return reverse('tournament_app:tournament_details', kwargs={'pk': self.pk})
 
 
 class Invitation(models.Model):

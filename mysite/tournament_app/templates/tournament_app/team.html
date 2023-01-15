@@ -27,6 +27,7 @@
 {% else %}
     <p>Druzyna nie uczestniczy obecnie w zadnym turnieju.</p>
 {% endif %}
+<p>Ilość wygranych turniejów: {{team.won_tournaments}}
 <h3>Lider drużyny: <a href='{{ team.leader.get_absolute_url }}' >{{ team.leader.username }}</a></h3>
 <h3>Ilość zawodników: {{ team.players.count }}/5</h3>
 <h3>Zawodnicy: </h3>
