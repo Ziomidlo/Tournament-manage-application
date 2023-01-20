@@ -58,6 +58,7 @@ class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches', null=True)
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches', null=True)
+    winner = models.ForeignKey(Team, on_delete=models.SET_NULL, related_name='winning_matches', null=True, blank=True)
     is_finished = models.BooleanField(default=False)
 
 

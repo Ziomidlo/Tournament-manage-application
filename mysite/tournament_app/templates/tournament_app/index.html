@@ -12,16 +12,16 @@
 </div>
 {% endfor %}
 {% endif %} 
-
-    <div class='main page'>
+<body>
     {% if user.is_authenticated %}
         {% if user.logo %}
-            <img src='{{user.logo.url}}'style='width:200px; length=200px'>
+            <img src='{{user.logo.url}}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
         {% else %}
-            <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
+            <img src= '{% static 'tournament_app/user.png' %}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
         {% endif %}
-            <p>Nick: {{ user.username }}
-            <p>Email: {{ user.email }}
+            <h2>Nick: {{ user.username }}</h2 style='width:300px; length=300px; display: block; margin: 0 auto;'>
+        <div class='user-info-box' style='float: left; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
+            <p>Email: {{ user.email }}</p>
         {%if user.is_team == False %}
             <p>Drużyna: W tym momencie nie posiadasz żadnej drużyny: <a href='{% url 'tournament_app:create_team' %}'>Stwórz</a> ją właśnie teraz!</p>
         {%else %}
@@ -30,13 +30,17 @@
                 {% endfor %}
         {% endif %}
         <p>Ilość zdobytych MVP: {{ user.MVP }}
+        </div>
+        <div class='user-info-center' style='float: center; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
             {% if user.info %}
                 <p>Informacje o użytkowniku: {{ user.info }}</p>
             {% else %}
                 <p>Informacje o użytkowniku: Brak</p>
             {% endif %}
-        {% if 'logged_in_user' in request.session %}
+            {% if 'logged_in_user' in request.session %}
             <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}' >Zaktualizuj </a>Swoje dane</p>
+        </div>
+            <div class='user-info-right' style='float: right; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
             <p> Zaproszenia: </p>
             {% if invitation in user.recipient.all %}
             {% for invitation in user.recipient.all %}
@@ -48,9 +52,16 @@
                 <p> W tym momencie nie masz żadnych zaproszeń do drużyny.</p>
             {% endif %}
         {% endif %}
+        </div>
     {% else %}
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>
     {% endif %}
-        </div>
     
     {% endblock %}
+    </body>
+    <style>
+        body {
+            background: linear-gradient(#fff, #e0ebeb, #fff);
+        }
+    </style>
+    

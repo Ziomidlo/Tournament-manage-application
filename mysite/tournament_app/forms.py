@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
-from .models import Team, Invitation, Match
+from .models import Team, Invitation, Match, Tournament
 
 User = get_user_model()
 
@@ -45,20 +45,21 @@ class InvitationForm(ModelForm):
 class AcceptInvitationForm(forms.Form):
     accept = forms.ChoiceField(label='Czy zaakceptować zaproszenie?', choices=[('Tak', 'Tak'), ('Nie', 'Nie')], widget=forms.RadioSelect)
 
-class WinnerTeam(forms.Form):
-    winner = forms.ChoiceField(choices=[])
+class WinnerTeam(ModelForm):
+    
+    class Meta:
+        model = Match
+        fields = ['winner']
+    winner = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.RadioSelect, empty_label=None)
 
-    def __init__(self, home_team, away_team, *args, **kwargs):
-        super(WinnerTeam, self).__init__(*args, **kwargs)
-        self.fields['winner'].choices = [(home_team.pk, home_team.name), (away_team.pk, away_team.name)]
+class MVPForm(ModelForm):
+    class Meta:
+        model = Tournament
+        fields = ['MVP']
 
-class MVPForm(forms.Form):
-    MVP = forms.ModelChoiceField(queryset=None, label='Wybierz MVP')
-
-    def __init__(self, team, *args, **kwargs):
-        super(MVPForm, self).__init__(*args, **kwargs)
-        self.fields['MVP'].queryset = team.players.all()
-
+    def __init__(self, remaining_team, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['MVP'].queryset = remaining_team.players.all()
 
 
     

@@ -282,6 +282,9 @@ def join_tournament(request, tournament_pk, team_pk):
             if team in tournament.team.all() and team.is_tournament:
                 messages.error(request, 'Twoja drużyna już bierze udział w turnieju!')
                 return redirect('tournament_app:tournament_details', pk=tournament_pk)
+            elif team.players.count() != 5:
+                messages.error(request, 'By uczestniczyć w tym turnieju musisz posiadać 5 graczy!')
+                return redirect('tournament_app:tournament_details', pk=tournament_pk)
             elif tournament.is_started:
                 messages.error(request, 'Nie można dołączyć do trwającego turnieju!')
                 return redirect('tournament_app:tournament_details', pk=tournament_pk)
@@ -346,8 +349,6 @@ def start_tournament(request, pk):
 def finish_tournament(request, pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     user = request.user
-    tournament.is_finished == True
-    tournament.save()
     if user.is_superuser == False:
         messages.error(request, 'Nie masz do tego dostępu!')
         return redirect('tournament_app:tournament_details', pk=pk)
@@ -362,12 +363,10 @@ def finish_tournament(request, pk):
                 remaining_team.won_tournaments += 1
                 remaining_team.save()
                 if remaining_team.players.count() > 0:
-                    form = MVPForm(remaining_team)
+                    form = MVPForm(remaining_team, data=request.POST)
                     if form.is_valid():
                         MVP = form.cleaned_data['MVP']
-                        print(MVP)
                         MVP.MVP += 1
-                        print(MVP)
                         MVP.save()
                         tournament.MVP = MVP
                         tournament.save()
@@ -377,8 +376,8 @@ def finish_tournament(request, pk):
                         return redirect('tournament_app:tournament_details', pk=pk)
                 else:
                     messages.error(request, 'Brak graczy w drużynie')
-                tournament.delete()
                 tournament.save()
+                tournament.delete()
                 messages.success(request, 'Pomyślnie zakończono turniej!')
                 return redirect('tournament_app:index')
         else:
@@ -434,6 +433,9 @@ def finish_round(request, pk):
             tournament.matches.all().delete()
             tournament.round_number += 1
             tournament.save()
+            if tournament.team.count() == 1:
+                tournament.is_finished = True
+                tournament.save()
             Tournament.objects.filter(pk=pk).update(is_drawed=False)
             messages.success(request, 'Pomyślnie zakończono rundę.')
             return redirect('tournament_app:tournament_details', pk=pk)
@@ -452,27 +454,29 @@ def save_match(request, tournament_pk, match_pk):
         return redirect('tournament_app:tournament_details', pk=tournament_pk)
     else:
         if request.method == 'POST':
-            form = WinnerTeam(match.home_team, match.away_team, request.POST)
+            form = WinnerTeam(request.POST)
             if form.is_valid():
                 match.winner = form.cleaned_data['winner']
                 print(match.winner)
                 if match.winner == match.home_team:
                     tournament.team.remove(match.away_team)
+                    tournament.save()
                     match.away_team.is_tournament = False
                 elif match.winner == match.away_team:
                     home_team = Match.objects.filter(pk=match_pk).first().home_team
                     tournament.team.remove(match.home_team)
+                    tournament.save()
                     home_team.is_tournament = False 
                 match.is_finished = True
                 match.save()
                 tournament.save()
-                messages.success(request, f'Pomyślnie zapisano wynik, wygrana drużyny!')
+                messages.success(request, f'Pomyślnie zapisano wynik, wygrana drużyny! {match.winner}')
                 return redirect('tournament_app:tournament_details', pk=tournament_pk)
             else:
                 messages.error(request, 'Niepoprawnie zapisano wynik!')
                 return redirect('tournament_app:match_details', tournament_pk=tournament_pk, match_pk=match_pk)
         else:
-            form = WinnerTeam(match.home_team, match.away_team, request.POST)
+            form = WinnerTeam(request.POST)
         return render(request,'tournament_app/match.html', context= { 'match':match, 'tournament':tournament, 'form':form })
     
 

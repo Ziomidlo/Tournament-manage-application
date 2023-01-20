@@ -1,5 +1,18 @@
 {% include 'tournament_app/navbar.html' %}
 
+{% load static %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'tournament_app/style.css' %}">
+</head> 
+<body>
 {% block content %}
 {% endblock %}
+</body>
+
+<style>
+    body {
+        background: linear-gradient(#fff, #e0ebeb, #fff);
+    }
+</style>
 

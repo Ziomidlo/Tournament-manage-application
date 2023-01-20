@@ -30,7 +30,8 @@
     </ul>
 {% endfor %}
 
-{% if match.is_finished == False and user.is_superuser %}
+{% if match.is_finished == False %}
+    {% if user.is_superuser %}
 <form method="post" action="{% url 'tournament_app:save_match' tournament_pk=tournament.pk match_pk=match.pk %}">
     {% csrf_token %}
     <label for="winner">Wybierz zwycięską drużynę:</label>
@@ -41,6 +42,9 @@
     <br><br>
     <input type="submit" value="Zakończ mecz" class='btn btn-dark'>
 </form>
+    {% endif %}
+{% else %}
+    <h4> Mecz zakończony zwycięstwem drużyny {{match.winner}}</h4>
 {% endif %}
 
 <a href='{% url 'tournament_app:tournament_details' pk=tournament.pk %}' class='btn btn-dark'>Powrót</a>

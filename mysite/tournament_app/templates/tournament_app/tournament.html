@@ -59,11 +59,11 @@
         {% if user.is_superuser and tournament.is_drawed == False and tournament.team.count > 1 %}
             <a href='{% url 'tournament_app:randomize_teams' pk=tournament.pk %}' class='btn btn-dark'>Losuj Drużyny</a> 
         {% endif %} 
-        {% if user.is_superuser  and tournament.is_drawed == True and tournament.team.count > 1 %}
+        {% if user.is_superuser  and tournament.is_drawed == True and tournament.team.count >= 1 %}
             <a href= '{% url 'tournament_app:finish_round' pk=tournament.pk %}' class='btn btn-dark'>Zakończ rundę</a>
         {% endif %}
     {% endif %}
-    {% if user.is_superuser and tournament.team.count == 1 %}
+    {% if user.is_superuser and tournament.is_finished and  tournament.team.count  == 1 %}
             <a href='{% url 'tournament_app:finish_tournament' pk=tournament.pk %}' class='btn btn-dark'>Zakończ Turniej</a>
     {% endif %}
             

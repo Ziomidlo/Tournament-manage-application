@@ -9,7 +9,7 @@
 {% endfor %}
 {% endif %} 
 
-<h2>Turniej wygrała drużyna {{tournament.team.all}}!</h2>
+<h2>Turniej wygrała drużyna {{tournament.team.first}}!</h2>
 
 <div class="container">
     <form method="post" action='{% url 'tournament_app:finish_tournament' pk=tournament.pk%}' >
