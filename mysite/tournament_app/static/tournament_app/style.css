@@ -1,3 +1,20 @@
-.base{
-    background-color: blue;
+.user-info-box, .user-info-center-inner, .user-info-right {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+}
+
+.user-info-center-inner {
+    text-align: center;
+    margin: 20px; border: 2px solid #ccc; 
+    padding: 20px;
+}
+
+.user-view-item {
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    padding: 10px;
 }

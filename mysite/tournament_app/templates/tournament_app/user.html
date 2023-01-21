@@ -1,31 +1,36 @@
 {% extends 'tournament_app/base.html' %}
-
-{% load static %}
-
+<html>
+    <head>
+        {% load static %}
+        <link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
     {% block content %}
-
-        {% if user.logo %}
-            <img src='{{user.logo.url}}'style='width:200px; length=200px'>
-        {% else %}
-            <img src= '{% static 'tournament_app/user.png' %}' style='width:200px; length=200px;'>
-        {% endif %}
-            <p>Nick: {{user.username}}
-            <p>Email: {{user.email}}
+    </head>
+    <body>
+    {% if user.logo %}
+    <img src='{{user.logo.url}}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
+{% else %}
+    <img src= '{% static 'tournament_app/user.png' %}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
+{% endif %}
+    <h2 style='text-align:center;'>{{ user.username }}</h2>
+    <div class='user-info-box' style='float: left; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
+        <p>Email: {{ user.email }}</p>
         {%if user.is_team == False %}
             <p>Drużyna: Brak drużyny</p>
         {%else %}
-        <p>Ilość zdobytych MVP: {{ user.MVP }}
             {% for team in user.teams.all %}
                 <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
-            {% endfor %}   
+            {% endfor %}  
+            <p>Ilość zdobytych MVP: {{ user.MVP }} 
         {% endif %}
+    </div>
+    <div class='user-info-center-inner'>
         {% if user.info %}
-            <p>Informacje o użytkowniku: {{ user.info }}</p>
+            <strong>Informacje o użytkowniku: </strong>{{ user.info }}
         {% else %}
-            <p>Informacje o użytkowniku: Brak</p>
+            <strong>Informacje o użytkowniku: </strong>Brak
         {% endif %}
-        <p><a href='{% url 'tournament_app:user_list' %}'>Powrót</a></p>
-
+        <p style='margin:20px;'><a href='{% url 'tournament_app:user_list' %}' class='btn btn-dark'>Powrót</a></p>
+        </div>
     {% endblock %}
-</body>
+    </body>
 </html>

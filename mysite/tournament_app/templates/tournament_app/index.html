@@ -1,10 +1,9 @@
 {% include 'tournament_app/navbar.html' %}
 
-    {% load static %}
-    <link rel='stylesheet' href='{% static 'style.css' %}'>
-
+    
+        {% load static %}
+    <link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
     {% block content %}
-
     {% if messages %}
 {% for message in messages %}
 <div class="alert alert-{{ message.tags }}">
@@ -19,7 +18,7 @@
         {% else %}
             <img src= '{% static 'tournament_app/user.png' %}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
         {% endif %}
-            <h2>Nick: {{ user.username }}</h2 style='width:300px; length=300px; display: block; margin: 0 auto;'>
+            <h2 style='text-align:center;'>{{ user.username }}</h2>
         <div class='user-info-box' style='float: left; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
             <p>Email: {{ user.email }}</p>
         {%if user.is_team == False %}
@@ -29,19 +28,20 @@
                     <p>Drużyna: <a href="{% url 'tournament_app:team_details' pk=team.pk%}">{{ team.name }}</a></p>
                 {% endfor %}
         {% endif %}
-        <p>Ilość zdobytych MVP: {{ user.MVP }}
+        <p>Ilość zdobytych MVP: {{ user.MVP }}</p>
         </div>
-        <div class='user-info-center' style='float: center; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
+        <div class='user-info-center'>
+            <div class='user-info-center-inner'>
             {% if user.info %}
-                <p>Informacje o użytkowniku: {{ user.info }}</p>
+                <strong>Informacje o użytkowniku</strong>{{ user.info }}
             {% else %}
                 <p>Informacje o użytkowniku: Brak</p>
             {% endif %}
             {% if 'logged_in_user' in request.session %}
-            <p><a href='{% url 'tournament_app:update_user' pk=user.pk %}' >Zaktualizuj </a>Swoje dane</p>
+            <strong><a href='{% url 'tournament_app:update_user' pk=user.pk %}' >Zaktualizuj </a>Swoje dane</strong>
         </div>
             <div class='user-info-right' style='float: right; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
-            <p> Zaproszenia: </p>
+            <strong> Zaproszenia: </strong>
             {% if invitation in user.recipient.all %}
             {% for invitation in user.recipient.all %}
             <ul>
@@ -52,9 +52,13 @@
                 <p> W tym momencie nie masz żadnych zaproszeń do drużyny.</p>
             {% endif %}
         {% endif %}
+            </div>
         </div>
     {% else %}
+    <center style='margin: 100px;'>
+        <h1>Aplikacja do zarządzania turniejami esportowymi</h1>
         <p><a href="{% url 'tournament_app:login' %}">Zaloguj</a> lub <a href="{% url 'tournament_app:register' %}">Stwórz nowe konto</a> by wyświetlić informacje o użytkowniku!</p>
+    </center>
     {% endif %}
     
     {% endblock %}

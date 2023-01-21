@@ -1,24 +1,32 @@
 {% extends 'tournament_app/base.html' %}
 
 {%load static%}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
 
 {% block content %}
+<center>
+<h2 style='padding: 10px;'>Użytkownicy</h2>
+</center>
 
-<h3>Logo           Użytkownik         Drużyna    </h3>
+<div class='user-view'>
 {% for user in user_list %}
+    <div class='user-view-item' style='border: 1px solid #ccc; display: flex; align-items: center; padding: 20px;'>
     {% if user.logo %}
         <img src='{{user.logo.url}}'style='width:50px; length=50px'>
     {% else %}
         <img src= '{% static 'tournament_app/user.png' %}' style='width:50px; length=50px;'>
     {% endif %}
-    <p><a href="{% url 'tournament_app:user_details' pk=user.pk %}">{{ user.username }}</a></p>    
+    <p style='margin: 10px;'><a href="{% url 'tournament_app:user_details' pk=user.pk %}">{{ user.username }}</a></p>    
     {% if user.is_team %}
         {% for team in user.teams.all %}
-            <p><a href='{% url 'tournament_app:team_details' pk=team.pk %}'>{{team.name}}</a>
+            <p style='margin: 10px; padding'><a href='{% url 'tournament_app:team_details' pk=team.pk %}'>{{team.name}}</a>
         {% endfor %}
     {% else %}
-        <p>Brak Drużyny</p>
+        <p style='margin: 10px;'>Brak Drużyny</p>
     {% endif %}
+</div>
 {% endfor %}
+
+</div>
 
 {% endblock %}

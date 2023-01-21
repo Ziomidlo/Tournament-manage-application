@@ -1,19 +1,36 @@
 {% extends 'tournament_app/base.html' %}
 
+{% load static %}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
+
 {% block content %}
 
+<center>
+    <h2 style='padding: 10px;'>Drużyny</h2>
+</center>
+
+<div class='user-view'>
 {% if team_list %}
-    <ul>
+
     {% for team in team_list %}
-        <li><a href="{% url 'tournament_app:team_details' pk=team.pk %}">{{ team.name }}</a></li>
+    <div class='user-view-item' style='border: 1px solid #ccc; display: flex; align-items: center; padding: 20px;'>
+    {% if team.logo %}
+        <img src='{{team.logo.url}}'style='width:50px; length=50px'>
+    {% else %}
+        <img src= '{% static 'tournament_app/team.png' %}' style='width:50px; length=50px;'>
+    {% endif %}
+        <a style='margin: 20px;' href="{% url 'tournament_app:team_details' pk=team.pk %}">{{ team.name }}</a></li>
+    <strong style='margin: 20px'>Lider: {{ team.leader }}</strong>
+    <strong style='margin: 20px;'>Liczba graczy: {{ team.players.count }}/5</strong>
+    </div>
     {% endfor %}
-    </ul>
+    </div>
 {% else %}
     <p>Brak dostępnych drużyn.</p>
 {% endif %}
 
 {% if user.is_anonymous %}
-    <p><a href='{% url 'tournament_app:login' %}'>Zaloguj się</a> by dostać dostęp do tego pola, lub stworzyć Swoją drużynę!</p>
+    <p><a href='{% url 'tournament_app:login' %}'>Zaloguj się</a> by  stworzyć Swoją drużynę!</p>
 {% else %}
 {%if user.is_team %}
 
