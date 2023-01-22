@@ -9,23 +9,29 @@
     <h2 style='padding: 10px;'><strong>Wyniki wyszukiwania frazy: {{query}}</strong></h2>
 </center>
 
-<div class='team-view'>
 {%if teams or users or tournaments %}
+
     {% for team in teams %}
+    <div class='team-view-item'>
     <p>Drużyna: <a href='{{ team.get_absolute_url }}'>{{ team.name }}</a></p>
     {% endfor %}
-
+</div>
     {% for user in users %}
+    <div class='user-view-item'>
         <p>Użytkownik: <a href='{{ user.get_absolute_url }}'>{{ user.username }}</a></p>
+    </div>
     {% endfor %}
 
     {% for tournament in tournaments %}
+    <div class='team-view-item'>
         <p>Turniej: <a href='{{ tournament.get_absolute_url }}'>{{ tournament.name }}</a></p>
-    {% endfor %}
+    </div>
+        {% endfor %}
+
 {% else %}
-    <p>Brak wyników podczas wyszukiwania!</p>
+    <center>Brak wyników podczas wyszukiwania!</center>
 {% endif %}
-</div>
+
 {% endblock %}
 
     

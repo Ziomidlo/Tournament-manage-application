@@ -29,8 +29,10 @@
         {% else %}
             <strong>Informacje o użytkowniku: </strong>Brak
         {% endif %}
-        <p style='margin:20px;'><a href='{% url 'tournament_app:user_list' %}' class='btn btn-dark'>Powrót</a></p>
         </div>
+        <center>
+            <p style='margin:20px;'><a href='{% url 'tournament_app:user_list' %}' class='btn btn-dark'>Powrót</a></p>
+        </center>
     {% endblock %}
     </body>
 </html>

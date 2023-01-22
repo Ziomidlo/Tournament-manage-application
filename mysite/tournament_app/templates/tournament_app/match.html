@@ -1,6 +1,7 @@
 {% extends 'tournament_app/base.html' %}
 
 {% load static %}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
 
 {% block content %}
 
@@ -11,25 +12,32 @@
 </div>
 {% endfor %}
 {% endif %} 
+<center>
+<h2><strong>{{tournament.name}}</strong></h2>
+<h3>Runda {{tournament.round_number}}</h3>
+<h4 style='padding: 20px;'>{{match.home_team.name}} vs {{match.away_team.name}}</h4>
+</center>
 
-<h1>{{tournament.name}}</h1>
-<h2>Runda {{tournament.round_number}}</h2>
+<div class='match-view'>
+    <div class='team-players'>
+        <h5>Zawodnicy drużyny "{{match.home_team.name}}" </h5>
+        {% for player in match.home_team.players.all %}
+        <ul>
+            <li><a href='{{ player.get_absolute_url }}'>{{ player.username }}</a></li>
+        </ul>
+        {% endfor %}
+    </div>
+    <div class='team-players'>
+        <h5>Zawodnicy drużyny "{{match.away_team.name}}" </h5>
+        {% for player in match.away_team.players.all %}
+        <ul>
+            <li><a href='{{ player.get_absolute_url }}'>{{ player.username }}</a></li>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
 
-<h3>{{match.home_team.name}} vs {{match.away_team.name}}</h3>
-<h4>Zawodnicy drużyny gospodarzy: </h4>
-{% for player in match.home_team.players.all %}
-    <ul>
-        <li><a href='{{ player.get_absolute_url }}'>{{ player.username }}</a></li>
-    </ul>
-{% endfor %}
-
-<h4>Zawodnicy drużyny gości: </h4>
-{% for player in match.away_team.players.all %}
-    <ul>
-        <li><a href='{{ player.get_absolute_url }}'>{{ player.username }}</a></li>
-    </ul>
-{% endfor %}
-
+<center>
 {% if match.is_finished == False %}
     {% if user.is_superuser %}
 <form method="post" action="{% url 'tournament_app:save_match' tournament_pk=tournament.pk match_pk=match.pk %}">
@@ -48,5 +56,5 @@
 {% endif %}
 
 <a href='{% url 'tournament_app:tournament_details' pk=tournament.pk %}' class='btn btn-dark'>Powrót</a>
-
+</center>
 {% endblock %}

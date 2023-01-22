@@ -1,6 +1,7 @@
 {% extends 'tournament_app/base.html' %}
 
 {% load static %}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
 
 
 {% block content %}
@@ -12,16 +13,23 @@
     </div>
     {% endfor %}
     {% endif %} 
-    {%if tournament.date %}
-        {{tournament.date}}
-    {% endif %} 
+
+
     {%if tournament.logo %}
-        <img src='{{tournament.logo.url}}' style='width:350px; length:350px'>
+        <img src='{{tournament.logo.url}}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
     {% else %}
-        <img src= '{% static 'tournament_app/tournament1.png' %}' style='width:350px; length=350px'>
+        <img src= '{% static 'tournament_app/tournament1.png' %}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
     {% endif %}
-    <h2>Nazwa Turnieju: {{tournament.name}}</h2>
-    <h3>Opis: {{tournament.description}}</h3>
+    <h2 style='text-align:center;'><strong>{{ tournament.name }}</strong></h2>
+    <div class='team-info-center'>
+        <div class='team-info-center-inner'>
+            {%if tournament.date %}
+            <h4>Stworzono: {{tournament.date}}</h4>
+            {% endif %} 
+            <p><strong>Opis: </strong> {{tournament.description}}</p>
+        </div>
+    </div>
+    <div class='team-info-box' style='float: left; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
     <ul>
         {% if tournament.is_started %}
         <h4>Pozostałe Drużyny:</h4>
@@ -35,40 +43,44 @@
         {% endfor %}
         {% endif %}
     </ul>
-
-    {% if tournament.is_started %}
-        <h2>Runda: {{tournament.round_number}}</h2>
-        <h3>Mecze: </h3>
-        {% for match in tournament.matches.all %}
-            <div>
-                <p> {{ match.home_team.name }} vs {{match.away_team.name}}</p> <a href='{% url 'tournament_app:match_details' tournament_pk=tournament.pk match_pk=match.pk %}'>Szczegóły</a>
-            </div>
-        {% endfor %}    
-    {% endif %}
-
+</div> 
+    <center>
     {%for team in tournament.team.all %}
         {%if request.user.id  == team.leader.id and tournament.is_started == False %}
         <a href='/leave_tournament/{{tournament.pk}}/{{team.pk}}' class='btn btn-dark'>Opuść Turniej</a>
         {% endif %}
     {% endfor %}
+
+    <a href='{% url 'tournament_app:tournament_list' %}' class='btn btn-dark' style=''>Powrót</a>
+    </center>
     {% if tournament.is_started == False %}
         {% if user.is_superuser and tournament.team.count == tournament.number_of_teams %}
             <a href='{% url 'tournament_app:start_tournament' pk=tournament.pk %}' class='btn btn-dark'>Rozpocznij Turniej</a>
         {% endif %}
-    {% else %}
-        {% if user.is_superuser and tournament.is_drawed == False and tournament.team.count > 1 %}
-            <a href='{% url 'tournament_app:randomize_teams' pk=tournament.pk %}' class='btn btn-dark'>Losuj Drużyny</a> 
-        {% endif %} 
-        {% if user.is_superuser  and tournament.is_drawed == True and tournament.team.count >= 1 %}
-            <a href= '{% url 'tournament_app:finish_round' pk=tournament.pk %}' class='btn btn-dark'>Zakończ rundę</a>
-        {% endif %}
     {% endif %}
     {% if user.is_superuser and tournament.is_finished and  tournament.team.count  == 1 %}
             <a href='{% url 'tournament_app:finish_tournament' pk=tournament.pk %}' class='btn btn-dark'>Zakończ Turniej</a>
+    {% endif %}    
+    
+    {% if tournament.is_started %}
+    <div class='user-info-right' style='float: right; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
+        <h2>Runda: {{tournament.round_number}}</h2>
+        <h3>Mecze: </h3>
+        {% for match in tournament.matches.all %}
+            <div class='match-line' style='display: flex; justify-content: space-between;'>
+                <p> {{ match.home_team.name }} vs {{match.away_team.name}}</p> 
+                <a href='{% url 'tournament_app:match_details' tournament_pk=tournament.pk match_pk=match.pk %}'>Szczegóły</a>
+            </div>
+        {% endfor %}
+        {% if user.is_superuser and tournament.is_drawed == False and tournament.team.count > 1 %}
+        <a href='{% url 'tournament_app:randomize_teams' pk=tournament.pk %}' class='btn btn-dark'>Losuj Drużyny</a> 
+    {% endif %} 
+    {% if user.is_superuser  and tournament.is_drawed == True and tournament.team.count >= 1 %}
+        <a href= '{% url 'tournament_app:finish_round' pk=tournament.pk %}' class='btn btn-dark'>Zakończ rundę</a>
+    {% endif %}  
     {% endif %}
-            
+    </div> 
 
-    <a href='{% url 'tournament_app:tournament_list' %}' class='btn btn-dark'>Powrót</a>
 
 
 

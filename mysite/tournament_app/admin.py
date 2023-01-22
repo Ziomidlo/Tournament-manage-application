@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Tournament, Team, User, Invitation
 
 class TournamentAdmin(admin.ModelAdmin):
-    exclude = ['is_started', 'round_number']
+    exclude = ['is_started', 'round_number', 'is_finished', 'is_drawed']
 
 
 class UserAdmin(admin.ModelAdmin):
