@@ -11,7 +11,7 @@
 {% else %}
     <img src= '{% static 'tournament_app/user.png' %}' style='width:300px; length=300px; display: block; margin: 0 auto;'>
 {% endif %}
-    <h2 style='text-align:center;'>{{ user.username }}</h2>
+    <h2 style='text-align:center;'><strong>{{ user.username }}</strong></h2>
     <div class='user-info-box' style='float: left; margin: 20px; border: 2px solid #ccc; padding: 20px;'>
         <p>Email: {{ user.email }}</p>
         {%if user.is_team == False %}

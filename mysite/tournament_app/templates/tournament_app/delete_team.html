@@ -6,9 +6,12 @@
 
 <form method="POST" action="{% url 'tournament_app:delete_team' pk=team.pk %}">
     {% csrf_token %}
+    <center style='padding: 20px;'>
+    <h2><strong>Usuwanie Drużyny</strong></h2>
     <p>Czy na pewno chcesz usunąć drużynę {{team.name}}?</p>
     <input type="submit" value="Usuń" class="btn btn-danger">
     <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class="btn btn-dark">Powrót</a>
+    </center>
 </form>
 
 {% endblock %}

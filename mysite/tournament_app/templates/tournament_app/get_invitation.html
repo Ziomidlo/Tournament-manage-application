@@ -7,7 +7,8 @@
 
 
 <div class="container mt-5">
-    <h2>Odbierz zaproszenie</h2>
+  <center style='padding: 20px;'>
+    <h2 style='padding: 10px;'><strong>Odbierz zaproszenie</strong></h2>
   
     {% if invitation %}
     <p>Otrzymałeś zaproszenie od użytkownika {{ invitation.sender }} do drużyny {{ invitation.team }}:</p>
@@ -20,6 +21,7 @@
       <a href='{% url 'tournament_app:index' %}' class="btn btn-dark">Powrót</a>
     </form>
   </div>
+</center>
     {% endif %}
 {% endblock %}
 

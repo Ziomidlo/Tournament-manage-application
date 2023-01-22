@@ -1,4 +1,4 @@
-.user-info-box, .user-info-center-inner, .user-info-right {
+.user-info-box, .user-info-center-inner, .user-info-right, .team-info-center-inner {
     display: grid;
     justify-content: center;
     align-items: center;
@@ -6,15 +6,34 @@
     height: auto;
 }
 
-.user-info-center-inner {
+.user-info-center-inner, .team-info-center-inner {
     text-align: center;
     margin: 20px; border: 2px solid #ccc; 
     padding: 20px;
 }
 
-.user-view-item {
+.user-view-item, .team-view-item {
     border: 1px solid #ccc;
     display: flex;
     align-items: center;
     padding: 10px;
+}
+
+.tournament-view {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tournament-view-item {
+    list-style: none;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 300px;
+    text-align: center;
+}
+
+.tournament-view p {
+    margin-top: 10px;
 }

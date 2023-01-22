@@ -9,7 +9,8 @@
 {% endfor %}
 {% endif %} 
 
-<h2>Turniej wygrała drużyna {{tournament.team.first}}!</h2>
+<center style='padding: 20px;'>
+<h2><strong>Turniej wygrała drużyna {{tournament.team.first}}!</strong></h2>
 
 <div class="container">
     <form method="post" action='{% url 'tournament_app:finish_tournament' pk=tournament.pk%}' >
@@ -18,4 +19,5 @@
         <input type="submit" value="Zakończ turniej" class='btn btn-dark'>
     </form>
 </div>
+</center>
 {% endblock %}

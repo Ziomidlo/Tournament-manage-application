@@ -6,14 +6,14 @@
 {% block content %}
 
 <center>
-    <h2 style='padding: 10px;'>Drużyny</h2>
+    <h2 style='padding: 10px;'><strong>Drużyny</strong></h2>
 </center>
 
-<div class='user-view'>
+<div class='team-view'>
 {% if team_list %}
 
     {% for team in team_list %}
-    <div class='user-view-item' style='border: 1px solid #ccc; display: flex; align-items: center; padding: 20px;'>
+    <div class='team-view-item' style='border: 1px solid #ccc; display: flex; align-items: center; padding: 20px;'>
     {% if team.logo %}
         <img src='{{team.logo.url}}'style='width:50px; length=50px'>
     {% else %}
@@ -24,11 +24,10 @@
     <strong style='margin: 20px;'>Liczba graczy: {{ team.players.count }}/5</strong>
     </div>
     {% endfor %}
-    </div>
 {% else %}
     <p>Brak dostępnych drużyn.</p>
 {% endif %}
-
+</div>
 {% if user.is_anonymous %}
     <p><a href='{% url 'tournament_app:login' %}'>Zaloguj się</a> by  stworzyć Swoją drużynę!</p>
 {% else %}

@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<center>
-    <h2>Edytuj Drużyne</h2>
+<center style='padding: 20px;'>
+    <h2><strong>Edytuj Drużyne</strong></h2>
     <br/>
     <form method=POST action='{% url 'tournament_app:update_team' pk=team.pk %}' enctype='multipart/form-data'>
         {% csrf_token %}
         {% for field in form %}
         {% if field.label %}
-            <div class="form-group">
+            <div class="form-group" style='padding: 10px;'>
                 {{ field.label_tag }}
                 {{ field }}
             </div>
@@ -23,6 +23,6 @@
         <input type='button' value='Anuluj dodawanie pliku' class='btn btn-danger' onclick='document.getElementById("id_logo").value = ""'>
         <a href='{% url 'tournament_app:team_details' pk=team.pk %}' class="btn btn-dark">Powrót</a>
     </form>
-</center
+</center>
 
 {% endblock %}

@@ -1,10 +1,24 @@
 {% extends 'tournament_app/base.html' %}
-    {% block content %}
 
+{%load static %}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
+
+{% block content %}
+
+ <center>
+    <h2 style='padding: 10px;'><strong>Turnieje</strong></h2>
+</center>
+
+    <div class='tournament-view'>
         {% if tournaments %}
-            <ul>
+    {% if tournament.logo %}
+        <img src='{{tournament.logo.url}}'style='width:200px; length=200px'>
+    {% else %}
+        <img src= '{% static 'tournament_app/tournament1.png' %}' style='width:200px; length=200px;'>
+    {% endif %}
+            <div class='tournament-view-item'>
             {% for tournament in tournaments %}
-                <li><a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a></li>
+                <a href="{% url 'tournament_app:tournament_details' pk=tournament.pk %}">{{ tournament.name }}</a>
                 {% if tournament.is_started %}
                     <p>Turniej Trwa!</p>
                 {% else %}
@@ -14,12 +28,14 @@
                 {%if tournament.team.count < tournament.number_of_teams and request.user.is_authenticated and request.user.id == team.leader.id and team.is_tournament == False and tournament.is_started == False %}
                     <a href='{% url 'tournament_app:join_tournament' tournament_pk=tournament.pk team_pk=team.pk %}' class = 'btn btn-dark'>Dołącz</a>
                 {% endif %}
+            </div>
             {% endfor %}
             {% endfor %}
             <p>{{request.team}}</p>
-            </ul>
         {% else %}
             <p>Brak dostępnych turniejów.</p>
         {% endif %}
-        
+    </div>
+
     {% endblock %}
+

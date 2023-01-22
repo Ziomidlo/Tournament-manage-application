@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<center>
-    <h2>Edytuj Informacje</h2>
+<center style='padding: 20px;'>
+    <h2><strong>Edytuj Informacje</strong></h2>
     <br/>
     <form method=POST action='{% url 'tournament_app:update_user' pk=user.pk %}' enctype='multipart/form-data'>
         {% csrf_token %}

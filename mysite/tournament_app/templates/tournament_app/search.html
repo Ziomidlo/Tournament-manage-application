@@ -1,10 +1,15 @@
 {% extends 'tournament_app/base.html' %}
 
 {%load static %}
+<link rel='stylesheet' type="text/css" href='{% static 'tournament_app/style.css' %}'>
 
 {% block content %}
 
-<h2>Wyniki wyszukiwania frazy: {{query}}</h2>
+<center>
+    <h2 style='padding: 10px;'><strong>Wyniki wyszukiwania frazy: {{query}}</strong></h2>
+</center>
+
+<div class='team-view'>
 {%if teams or users or tournaments %}
     {% for team in teams %}
     <p>Drużyna: <a href='{{ team.get_absolute_url }}'>{{ team.name }}</a></p>
@@ -20,5 +25,7 @@
 {% else %}
     <p>Brak wyników podczas wyszukiwania!</p>
 {% endif %}
+</div>
 {% endblock %}
+
     

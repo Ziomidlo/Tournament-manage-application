@@ -10,7 +10,7 @@
 {% endfor %}
 {% endif %} 
 
-
+<center style='padding: 20px;'>
 <h2>Dołączenie do turnieju </h2>
 <p> Czy na pewno chcesz dołączyć do turnieju {{ tournament.name }}?</p>
 <form method='POST' action='{% url 'tournament_app:join_tournament' tournament_pk=tournament.pk team_pk=team.pk %}'>
@@ -18,5 +18,6 @@
     <button type='submit' class='btn btn-success'>Dołącz</button>
     <a href='{% url 'tournament_app:tournament_details' pk=tournament.pk %}' class="btn btn-dark">Anuluj</a>
 </form>
+</center>
 
 {% endblock %}
