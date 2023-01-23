@@ -45,7 +45,7 @@
         <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></br>
     {% else %}
         <a href='{% url 'tournament_app:user_details'  player.pk %}'>{{ player.username }}</a></br>
-    {% endif %}'>
+    {% endif %}
      {% if team.leader.id == user.id and player != team.leader %}
         <a href='{% url 'tournament_app:remove_player' team.pk player.pk %}' class="btn btn-danger">Usuń</a></br>
     {% endif %}

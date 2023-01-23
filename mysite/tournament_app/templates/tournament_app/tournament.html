@@ -52,8 +52,7 @@
     {% endfor %}
 
     <a href='{% url 'tournament_app:tournament_list' %}' class='btn btn-dark' style=''>Powrót</a>
-    </center>
-    {% if tournament.is_started == False %}
+        {% if tournament.is_started == False %}
         {% if user.is_superuser and tournament.team.count == tournament.number_of_teams %}
             <a href='{% url 'tournament_app:start_tournament' pk=tournament.pk %}' class='btn btn-dark'>Rozpocznij Turniej</a>
         {% endif %}
@@ -61,6 +60,8 @@
     {% if user.is_superuser and tournament.is_finished and  tournament.team.count  == 1 %}
             <a href='{% url 'tournament_app:finish_tournament' pk=tournament.pk %}' class='btn btn-dark'>Zakończ Turniej</a>
     {% endif %}    
+    </center>
+
     
     {% if tournament.is_started %}
     <div class='user-info-right' style='float: right; margin: 20px; border: 2px solid #ccc; padding: 20px;'>

@@ -28,6 +28,7 @@
     <p>Brak dostępnych drużyn.</p>
 {% endif %}
 </div>
+<center style='padding: 10px'>
 {% if user.is_anonymous %}
     <p><a href='{% url 'tournament_app:login' %}'>Zaloguj się</a> by  stworzyć Swoją drużynę!</p>
 {% else %}
@@ -39,5 +40,5 @@
 
 {% endif %}
 {% endif %}
-
+</center>
 {% endblock %}
